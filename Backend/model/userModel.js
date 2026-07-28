@@ -17,6 +17,31 @@ const UserSchema = new mongoose.Schema({
     required:true,
  },
 
+ skillIHave:{
+   type:String,
+   required: true,
+ },
+ bio:{
+   type:String,
+   default:[]
+ },
+ language:{
+   type:String,
+   default:""
+ },
+ profilePic:{
+   type:String,
+   default:""
+ },
+ developer:[
+   {
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"User"
+   }],
+ isOnboarding:{
+   type:Boolean,
+   default:false,
+ },
 
 },{timestamps:true})
 
