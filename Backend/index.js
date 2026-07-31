@@ -2,6 +2,7 @@ import express from "express"
 import dotenv from "dotenv"
 dotenv.config()
 
+import connectDB from "./util/db.js"
 import dns from "dns"
 import cookieParser from "cookie-parser"
 dns.setServers(["1.1.1.1", "8.8.8.8"])
@@ -16,4 +17,5 @@ app.use(cookieParser())
 
 app.listen(3000, ()=>{
     console.log("server is running...")
+    connectDB()
 })
