@@ -5,7 +5,7 @@ export const Signup = async (req,res) => {
             return res.status(401).json({message:"All Field Required"})
         }
 
-        
+
 
     } catch (error) {
         console.error("error in Signup", error)
@@ -29,6 +29,15 @@ export const Logout = async (req,res) => {
         
     } catch (error) {
         console.error("error in Logout", error);
+        return res.status(500).json({message: "internal server error"})
+    }
+}
+
+export const onBoard = async (req,res) => {
+    try {
+        
+    } catch (error) {
+        console.error("error in On boarding", error);
         return res.status(500).json({message: "internal server error"})
     }
 }
