@@ -1,6 +1,6 @@
 import {rateLimit} from "express-rate-limit"
 
-const RateLimit =  rateLimit({
+const Rate =  rateLimit({
     windowMS: 15*60*1000,
     limit:50,
     standardHeaders: 'true',
@@ -8,4 +8,4 @@ const RateLimit =  rateLimit({
     message:"Too many requests from this IP, please try again later."
 })
 
-export default RateLimit;
+export default Rate;
