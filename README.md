@@ -1,639 +1,414 @@
-# 🚀 Startup Collaboration Platform
+# Startup Collaboration Platform
 
-### Connect. Build. Launch.
+A privacy-focused full-stack collaboration platform that helps students and developers find suitable teammates based on skills and private project requirements.
 
-An AI-powered full-stack collaboration platform that helps students turn their ideas into real projects by connecting them with people who have the right skills.
+The platform solves a common problem: one student may have a strong project idea but lack the required team, while another student may have the right technical skills but no suitable project to join. Instead of publicly exposing complete project ideas, the system focuses on developer discovery, controlled recruitment, and AI-assisted skill matching.
 
----
-
-## 📌 Overview
-
-The **Startup Collaboration Platform** is designed to solve a common problem faced by students: having great startup or software project ideas but not having the right teammates to build them.
-
-At the same time, many students have valuable technical skills such as **React, Node.js, Python, AI/ML, UI/UX, and more**, but struggle to find meaningful projects where they can apply their skills and gain real-world experience.
-
-This platform brings both sides together in one place.
-
-A user can create a project idea, describe the skills they need, and use an **AI-powered recommendation system** to discover suitable people based on their skills, experience, interests, and domain preferences.
-
-Once a team is formed, members can communicate through **real-time chat and video calls** and collaborate on their project.
-
-### Core Workflow
-
-**Idea → Required Skills → AI Matching → Right People → Team Formation → Collaboration → Build**
-
----
-
-## 🎯 Problem Statement
-
-Students often face challenges when trying to build innovative projects:
-
-* Students have ideas but lack technical teammates.
-* Skilled developers don't know where to find suitable projects.
-* UI/UX designers struggle to find teams where they can contribute.
-* Students depend on scattered WhatsApp groups, LinkedIn posts, Discord servers, or personal connections.
-* There is no centralized platform focused specifically on helping students form project teams.
-
-The Startup Collaboration Platform provides a centralized ecosystem for discovering ideas, finding skilled collaborators, forming teams, and communicating with team members.
-
----
-
-## 💡 Solution
-
-The platform allows students to:
-
-* Create professional profiles.
-* Showcase skills and experience.
-* Publish startup or software project ideas.
-* Define the skills required for their projects.
-* Discover projects based on skills and interests.
-* Search for people with specific skills.
-* Get AI-powered teammate recommendations.
-* Apply to join projects.
-* Invite suitable users to projects.
-* Form project teams.
-* Communicate through real-time chat.
-* Conduct video calls with team members.
-
----
-
-## ⭐ Key Feature — AI-Powered Team Recommendation
-
-The main USP of this platform is its **AI-powered skill-based matching system**.
-
-When a user creates a project, they provide:
-
-* Project title
-* Project description
-* Domain
-* Required skills
-* Team requirements
-
-The AI analyzes the project requirements and compares them with user profiles.
-
-### Matching Flow
+## Core Idea
 
 ```text
-Project Idea
-      ↓
-Project Description
-      ↓
+Project Owner
+    ↓
+Creates Private Project
+    ↓
+Defines Required Skills
+    ↓
+AI Recommendation
+    ↓
+Recommended Developers
+    ↓
+Invitation / Join Request
+    ↓
+Team Collaboration
+    ↓
+Chat + Video
+```
+
+## Key Features
+
+- User signup, login and logout using a single JWT authentication flow
+- User onboarding and editable developer profiles
+- Dynamic technical skills
+- Skill normalization for variations such as `Node.js`, `NodeJS`, and `Node JS`
+- Developer/user discovery through skill-based profiles
+- Private project creation and management
+- Recruitment requirements without publicly exposing the complete project idea
+- Join requests and project invitations through a unified Request module
+- AI-assisted collaborator recommendation
+- Semantic skill matching and candidate ranking
+- Team/member management
+- Real-time notifications
+- Real-time chat and video communication
+- Profile/media upload using Cloudinary
+- User report submission
+
+## Privacy-First Project Discovery
+
+Project ideas are **not displayed publicly on the Home feed**.
+
+The public discovery experience focuses on users and their skills. A project owner can privately define the project and required skills, then use recruitment and AI recommendations to find suitable collaborators.
+
+## AI Recommendation Flow
+
+```text
 Required Skills
       ↓
-AI Analysis
+Skill Normalization
       ↓
-User Skill Profiles
+Candidate Retrieval
       ↓
-Matching & Ranking
+Semantic Matching
       ↓
-Match Score
+Skill Similarity
       ↓
-Recommended People
+Candidate Ranking
+      ↓
+Recommended Developers
 ```
+
+The AI layer is separated from the main application backend so that recommendation logic can evolve independently.
+
+## Technology Stack
+
+### Frontend
+
+- React
+- Vite
+- Tailwind CSS
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT
+- bcrypt
+- Socket.IO
+- Cloudinary
+
+### AI Services
+
+- Python
+- FastAPI
+- Skill normalization
+- Embeddings
+- Semantic similarity
+- Recommendation ranking
+
+## Project Architecture
+
+```text
+startup-collaboration-platform/
+│
+├── frontend/       # React user interface
+├── backend/        # Node.js application backend
+├── aiServices/     # Python AI recommendation service
+├── docs/           # Internal design/development documents
+├── .gitignore
+└── README.md
+```
+
+### System Flow
+
+```text
+                 Frontend
+              React + Vite
+                    │
+                    │ REST / Socket.IO
+                    ▼
+                 Backend
+            Node.js + Express
+                    │
+        ┌───────────┼───────────┐
+        │           │           │
+        ▼           ▼           ▼
+     MongoDB    Cloudinary   Socket.IO
+        │
+        └───────────────┐
+                        ▼
+                   AI Services
+                Python + FastAPI
+                        │
+                        ▼
+                  Normalization
+                        ↓
+                    Embeddings
+                        ↓
+                Semantic Matching
+                        ↓
+                     Ranking
+                        ↓
+               Recommended Users
+```
+
+## Backend Structure
+
+```text
+backend/
+│
+├── src/
+│   ├── config/
+│   │   ├── db.js
+│   │   └── cloudinary.js
+│   │
+│   ├── controllers/
+│   │   ├── auth.controller.js
+│   │   ├── user.controller.js
+│   │   ├── project.controller.js
+│   │   ├── recruitment.controller.js
+│   │   ├── request.controller.js
+│   │   ├── recommendation.controller.js
+│   │   ├── team.controller.js
+│   │   ├── notification.controller.js
+│   │   ├── communication.controller.js
+│   │   └── report.controller.js
+│   │
+│   ├── middleware/
+│   │   ├── auth.middleware.js
+│   │   └── upload.middleware.js
+│   │
+│   ├── models/
+│   │   ├── user.model.js
+│   │   ├── skill.model.js
+│   │   ├── project.model.js
+│   │   ├── recruitment.model.js
+│   │   ├── request.model.js
+│   │   ├── conversation.model.js
+│   │   ├── message.model.js
+│   │   ├── notification.model.js
+│   │   └── report.model.js
+│   │
+│   ├── routes/
+│   │   ├── auth.routes.js
+│   │   ├── user.routes.js
+│   │   ├── project.routes.js
+│   │   ├── recruitment.routes.js
+│   │   ├── request.routes.js
+│   │   ├── recommendation.routes.js
+│   │   ├── team.routes.js
+│   │   ├── notification.routes.js
+│   │   ├── communication.routes.js
+│   │   └── report.routes.js
+│   │
+│   ├── services/
+│   │   ├── auth.service.js
+│   │   ├── user.service.js
+│   │   ├── project.service.js
+│   │   ├── recruitment.service.js
+│   │   ├── request.service.js
+│   │   ├── recommendation.service.js
+│   │   ├── team.service.js
+│   │   ├── notification.service.js
+│   │   ├── communication.service.js
+│   │   └── report.service.js
+│   │
+│   ├── sockets/
+│   │   └── socket.js
+│   │
+│   ├── utils/
+│   │   ├── normalizeSkill.js
+│   │   └── generateToken.js
+│   │
+│   └── index.js
+│
+├── .env
+├── .env.example
+└── package.json
+```
+
+## AI Services Structure
+
+```text
+aiServices/
+│
+├── app/
+│   ├── api/
+│   │   ├── recommendation.py
+│   │   └── health.py
+│   │
+│   ├── services/
+│   │   ├── normalization_service.py
+│   │   ├── embedding_service.py
+│   │   ├── semantic_service.py
+│   │   ├── matching_service.py
+│   │   └── ranking_service.py
+│   │
+│   ├── schemas/
+│   │   └── recommendation_schema.py
+│   │
+│   ├── utils/
+│   │   ├── text_cleaner.py
+│   │   └── similarity.py
+│   │
+│   ├── config/
+│   │   └── settings.py
+│   │
+│   └── main.py
+│
+├── .env
+├── .env.example
+├── requirements.txt
+└── README.md
+```
+
+## Backend Design Pattern
+
+The backend follows a simple layered flow:
+
+```text
+Route
+  ↓
+Middleware
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Model / AI Service / External Service
+  ↓
+Response
+```
+
+Controllers coordinate HTTP requests and responses, while services contain the main business logic.
+
+## Authentication
+
+The project uses a **single JWT token** rather than separate access and refresh tokens.
+
+```text
+Login / Signup
+      ↓
+Generate JWT
+      ↓
+Client sends token
+      ↓
+Authorization: Bearer <token>
+      ↓
+auth.middleware.js
+      ↓
+Protected API
+```
+
+Passwords are hashed using bcrypt before being stored in MongoDB.
+
+## Skill System
+
+Skills are dynamic. Users are not restricted to a small manually defined list.
 
 For example:
 
 ```text
-Project: AI Fitness Platform
-
-Required Skills:
-React
 Node.js
-Python
-Machine Learning
-UI/UX
+NodeJS
+Node JS
+nodejs
 ```
 
-The system may recommend:
+The normalization layer converts formatting differences into a common representation. Semantic matching in the AI service handles meaning-based relationships that simple string normalization cannot reliably solve.
+
+The `skill.model.js` remains shared between user profiles, project requirements, and recommendation logic.
+
+## Request System
+
+Join requests and invitations use one Request module.
 
 ```text
-Rahul
-Python + Machine Learning
-92% Match
+Join Request:
+User → Project Owner
 
-Swayam
-React + Node.js
-88% Match
-
-Priya
-UI/UX
-86% Match
+Invitation:
+Project Owner → User
 ```
 
-The platform can also explain why a user was recommended based on their skills and project requirements.
-
----
-
-## 👥 User Roles
-
-The platform has two types of users.
-
-### 👤 Normal User
-
-Every registered student is a normal user.
-
-A normal user can act as both an **Idea Owner** and a **Skill Contributor**.
-
-#### As an Idea Owner
-
-* Create projects.
-* Add project descriptions.
-* Define required skills.
-* Receive AI recommendations.
-* Invite suitable users.
-* Accept or reject applications.
-* Manage project members.
-
-#### As a Skill Contributor
-
-* Create a professional profile.
-* Add skills and experience.
-* Discover projects.
-* Search for people and projects.
-* Apply to join projects.
-* Accept project invitations.
-* Collaborate with team members.
-
-> There is no separate Team Leader role. A user who creates a project automatically becomes its Project Owner.
-
----
-
-### 🛡️ Admin
-
-The Admin manages and moderates the platform.
-
-Admin capabilities include:
-
-* User management.
-* User verification.
-* User suspension.
-* Project moderation.
-* Report management.
-* Spam and inappropriate content removal.
-* Platform activity monitoring.
-* Basic analytics.
-
----
-
-## 📱 Main Features
-
-### 🔐 Authentication
-
-* User registration.
-* Secure login.
-* JWT-based authentication.
-* Password hashing.
-* Role-based access control.
-
-### 🧑‍💻 User Onboarding
-
-Users can add:
-
-* Skills.
-* Experience.
-* Interests.
-* Domain preferences.
-* GitHub profile.
-* LinkedIn profile.
-
-This information helps the recommendation system provide better matches.
-
-### 🏠 Home
-
-The main platform dashboard where users can:
-
-* Discover projects.
-* Search for people.
-* View recommendations.
-* View recent projects.
-* Create a project using the `+` button.
-
-### ➕ Create Project
-
-Users can create projects by providing:
-
-* Project title.
-* Project description.
-* Domain.
-* Required skills.
-* Team size.
-
-### 🤖 AI Recommendations
-
-AI recommends suitable people based on:
-
-* Skill match.
-* Experience.
-* Interests.
-* Domain preferences.
-* Project requirements.
-
-### 🔎 Discover
-
-Users can:
-
-* Find people based on skills.
-* Find projects based on technologies.
-* Search by domain.
-* Explore suitable collaboration opportunities.
-
-### 🤝 Team Formation
-
-Users can join projects through:
-
-* Project applications.
-* Project invitations.
-
-Project owners can accept or reject applications and invitations.
-
-### 💬 Real-Time Chat
-
-Team members can communicate through project-based real-time chat.
-
-### 🎥 Video Calling
-
-Project members can communicate through video calls for meetings and collaboration.
-
-### 🔔 Notifications
-
-Users receive notifications for:
-
-* New applications.
-* Project invitations.
-* Application status changes.
-* Invitation status changes.
-* New messages.
-* Important project activities.
-
-### 👤 User Profile
-
-Users can showcase:
-
-* Profile photo.
-* Bio.
-* Skills.
-* Experience.
-* Interests.
-* Projects.
-* GitHub.
-* LinkedIn.
-
-### ⚙️ Settings
-
-Users can manage:
-
-* Account settings.
-* Privacy.
-* Security.
-* Notification preferences.
-
-### 🛡️ Admin Dashboard
-
-Admin can:
-
-* Monitor platform statistics.
-* Manage users.
-* Moderate projects.
-* Handle reports.
-* Manage platform settings.
-
----
-
-## 🗺️ Application Pages
-
-### User
+A request can maintain states such as:
 
 ```text
-Login
-Signup
-Onboarding
-Home
-Discover / AI Recommendation
-Project Details
-User Profile
-Chat
-Video Call
-Notifications
-Settings
+pending
+accepted
+rejected
 ```
 
-### Admin
+## Communication
+
+Chat and video calling are grouped into one Communication module.
+
+Socket.IO handles real-time behavior through a single backend `socket.js` entry point, including messaging and other required live events.
+
+Conversation and Message remain separate database models so message history does not make individual conversation documents unnecessarily large.
+
+## Development Strategy
+
+The project should be implemented in this order:
 
 ```text
-Admin Dashboard
-User Management
-Project / Report Management
-Admin Settings
+1. Project Setup
+2. Database Connection
+3. Authentication
+4. User + Onboarding + Profile
+5. Skills
+6. Private Projects
+7. Recruitment
+8. Requests / Invitations
+9. Team Management
+10. Notifications
+11. Communication
+12. Reports
+13. AI Service Setup
+14. Skill Normalization
+15. Semantic Matching
+16. Recommendation Ranking
+17. Full Integration
+18. Deployment
 ```
 
-The **Create Project** feature can be opened from the `+` button on the Home page using a modal or drawer.
+The core application should work reliably before integrating the advanced AI recommendation layer.
 
----
+## Environment Variables
 
-## 🏗️ System Architecture
+Example backend `.env`:
 
-```text
-                         USERS
-                           │
-                           ▼
-                  React + Vite Frontend
-                           │
-                           │ REST API
-                           ▼
-                  Node.js + Express
-                           │
-          ┌────────────────┼────────────────┐
-          │                │                │
-          ▼                ▼                ▼
-     Authentication    Project System    Admin System
-          │                │                │
-          ▼                ▼                ▼
-         JWT          Applications      Moderation
-                       Invitations       Reports
-          │                │
-          └────────────────┼────────────────┐
-                           │                │
-                           ▼                ▼
-                       MongoDB          Socket.io
-                           │                │
-                           │                ▼
-                           │         Real-Time Chat
-                           │
-                           ▼
-                       AI Service
-                           │
-               ┌───────────┴───────────┐
-               ▼                       ▼
-         Skill Analysis          Matching Engine
-               │                       │
-               └───────────┬───────────┘
-                           ▼
-                   Recommended Users
+```env
+PORT=5000
+MONGO_URI=
+JWT_SECRET=
+CLIENT_URL=
+
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+AI_SERVICE_URL=
 ```
 
----
+Never commit real `.env` secrets to GitHub.
 
-## 🧠 AI Recommendation Architecture
+## Current Scope Decisions
 
-The AI recommendation system follows this flow:
+The current version intentionally does **not** include:
 
-```text
-Create Project
-      ↓
-Project Description
-      +
-Required Skills
-      ↓
-AI Analysis
-      ↓
-Extract Project Requirements
-      ↓
-Search User Profiles
-      ↓
-Skill Matching
-      ↓
-Experience Matching
-      ↓
-Domain Matching
-      ↓
-Interest Matching
-      ↓
-Calculate Match Score
-      ↓
-Rank Candidates
-      ↓
-Recommend Suitable Users
-```
+- Admin panel
+- Public project-idea feed
+- Access + refresh token architecture
+- Separate chat and video modules
+- Separate join-request and invitation modules
+- Separate skill controller/service/routes
+- Multiple Socket.IO files
+- Rate-limit middleware
+- Validation middleware layer
+- Constants folder
+- Complex enterprise architecture
 
-A hybrid approach can be used by combining:
+These decisions keep the application manageable while preserving the core collaboration and AI functionality.
 
-```text
-AI Skill Extraction
-        +
-Rule-Based Skill Matching
-        +
-Semantic Similarity
-        ↓
-Final Recommendation
-```
+## Goal
+
+The final goal is to create a platform where a student can:
+
+**Create a private idea → specify required skills → discover suitable developers → receive AI recommendations → invite collaborators → form a team → communicate and build together.**
 
 ---
 
-## 🛠️ Technology Stack
-
-### Frontend
-
-* React.js
-* Vite
-* Tailwind CSS
-* React Router
-* Zustand / Redux Toolkit
-* Axios
-
-### Backend
-
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* JWT
-* bcrypt
-
-### Real-Time Communication
-
-* Socket.io
-* Video Calling Technology
-
-### Artificial Intelligence
-
-* LLM API
-* AI-based skill extraction
-* Skill matching
-* Semantic similarity
-* Embeddings *(optional advanced implementation)*
-
-### Development & Deployment
-
-* Git
-* GitHub
-* Docker *(optional)*
-* Cloud Deployment
-
----
-
-## 🗄️ Database Collections
-
-The main MongoDB collections include:
-
-```text
-Users
-Projects
-Applications
-Invitations
-Conversations
-Messages
-Notifications
-Reports
-```
-
-### Basic Data Relationship
-
-```text
-User
- │
- ├── Creates ──→ Projects
- │
- ├── Applies ──→ Projects
- │
- ├── Receives ─→ Invitations
- │
- └── Joins ────→ Project Teams
-                       │
-                       ▼
-                 Conversations
-                       │
-                       ▼
-                    Messages
-```
-
----
-
-## 🔄 Complete User Journey
-
-### Idea Owner
-
-```text
-Create Account
-      ↓
-Complete Onboarding
-      ↓
-Create Project
-      ↓
-Add Description & Required Skills
-      ↓
-AI Analyzes Requirements
-      ↓
-AI Recommends Suitable People
-      ↓
-View Profiles
-      ↓
-Send Invitations
-      ↓
-Build Team
-      ↓
-Chat & Video Call
-      ↓
-Collaborate
-```
-
-### Skill Contributor
-
-```text
-Create Account
-      ↓
-Complete Profile
-      ↓
-Add Skills & Interests
-      ↓
-Discover Projects
-      ↓
-Find Suitable Project
-      ↓
-Apply to Join
-      ↓
-Project Owner Accepts
-      ↓
-Join Team
-      ↓
-Chat & Video Call
-      ↓
-Collaborate
-```
-
----
-
-## 🔐 Security
-
-The application focuses on secure user authentication and authorization using:
-
-* JWT authentication.
-* HTTP-only cookies.
-* Password hashing with bcrypt.
-* Role-based access control.
-* Input validation.
-* API security.
-* CORS configuration.
-* Rate limiting.
-* Secure file uploads.
-* Error handling.
-
----
-
-## 🚀 Future Enhancements
-
-Possible future improvements include:
-
-* Advanced semantic search.
-* Vector database integration.
-* Improved AI teammate recommendations.
-* GitHub integration.
-* GitHub contribution analysis.
-* Project progress tracking.
-* Task management.
-* Team performance analytics.
-* AI-powered project suggestions.
-* AI-generated project roadmaps.
-* Portfolio generation.
-* Open-source project discovery.
-
----
-
-## 🎯 Project Vision
-
-The platform aims to create a centralized ecosystem where students can transform ideas into real projects by finding the right collaborators.
-
-```text
-💡 IDEA
-   ↓
-📋 PROJECT
-   ↓
-🧠 AI MATCHING
-   ↓
-👥 RIGHT PEOPLE
-   ↓
-🤝 TEAM
-   ↓
-💬 COLLABORATION
-   ↓
-🚀 BUILD
-```
-
-### Core USP
-
-> **"Post your idea. Tell us the skills you need. Let AI help you find the right people."**
-
----
-
-## 📌 Project Summary
-
-The **Startup Collaboration Platform** combines **Full-Stack Development, Artificial Intelligence, Real-Time Communication, and Team Collaboration** into one platform designed specifically for students.
-
-The core goal is simple:
-
-> **Connect students who have ideas with students who have the skills to build them.**
-
-**Idea → Right People → Team → Collaboration → Project**
-
----
-
-## 👨‍💻 Project Status
-
-🚧 **Currently in Development**
-
-This project is being developed as a collaborative team project for academic and learning purposes.
-
----
-
-## 📄 License
-
-This project is developed for educational and academic purposes.
+**Project Type:** College Minor Project  
+**Architecture:** Frontend + Node Backend + Independent AI Service  
+**Primary Focus:** Skill-Based Collaboration + Private Project Recruitment + AI Recommendations
