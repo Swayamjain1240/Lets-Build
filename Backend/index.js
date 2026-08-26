@@ -12,6 +12,7 @@ import projectRoute from "./routes/projectRoute.js"
 import recruitmentRoute from "./routes/recruitmentRoute.js"
 import teamRouter from "./routes/teamRouter.js"
 import requestRouter from "./routes/requestRoute.js"
+import recommendationRouter from "./routes/recommendationRouter.js"
 import connectDB from "./config/db.js"
 
 const app = express()
@@ -35,6 +36,7 @@ app.use("/api/projects", projectRoute);
 app.use("/api/recruitments", recruitmentRoute);
 app.use("/api/request", requestRouter)
 app.use("/api/team", teamRouter)
+app.use("/api/recommendations", recommendationRouter);
 
 
 app.listen(PORT, ()=>{
