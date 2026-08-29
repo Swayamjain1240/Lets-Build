@@ -14,6 +14,11 @@ import teamRouter from "./routes/teamRouter.js"
 import requestRouter from "./routes/requestRoute.js"
 import recommendationRouter from "./routes/recommendationRouter.js"
 import connectDB from "./config/db.js"
+import { initSocket } from "./sockets/socket.js"
+import notificationRoutes from "./routes/notificationRoute.js"
+import reportRoutes from "./routes/reportRoute.js"
+import communicationRoutes from "./routes/communicationRoute.js"
+
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -21,14 +26,11 @@ const PORT = process.env.PORT || 5000
 app.use(express.json());
 app.use(cookieParser());
 
-// app.use(cors({
-//     origin:"http://localhost:5000/",
-//     credentials: true,
-// }))
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials: true,
+}))
 
-app.use("/health", (req,res)=>{
-    return res.status(201).json({message:"server is running"});
-})
 
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
@@ -37,9 +39,13 @@ app.use("/api/recruitments", recruitmentRoute);
 app.use("/api/request", requestRouter)
 app.use("/api/team", teamRouter)
 app.use("/api/recommendations", recommendationRouter);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/communication', communicationRoutes);
+app.use('/api/reports', reportRoutes);
 
-
-app.listen(PORT, ()=>{
+const server = app.listen(PORT, ()=>{
     console.log(`server is running on PORT ${PORT}`)
     connectDB();
 });
+
+initSocket(server)
