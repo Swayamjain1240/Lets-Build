@@ -1,7 +1,8 @@
 from services.matchingService import match_candidate
 
+
 def rank_candidates(
-    required_skills: list[str],
+    required_skills: list[dict],
     candidates: list[dict]
 ):
 
@@ -14,12 +15,14 @@ def rank_candidates(
             candidate.get("skills", [])
         )
 
+        score_percentage = round(
+            result["score"] * 100,
+            2
+        )
+
         ranked_candidates.append({
-            "userId": candidate.get("userId"),
-            "score": result["score"],
-            "matchedCount": result["matchedCount"],
-            "requiredCount": result["requiredCount"],
-            "matchedSkills": result["matchedSkills"]
+            "id": candidate.get("id"),
+            "score": score_percentage
         })
 
     ranked_candidates.sort(
