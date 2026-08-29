@@ -2,28 +2,47 @@ from pydantic import BaseModel
 from typing import List
 
 
-class Candidate (BaseModel):
-    userId: str
-    skills: List[str]
+class Skill(BaseModel):
+    name: str
+    displayName: str
 
-class RecommendationRequest(BaseModel):
-    requiredSkills: List[str]
-    candidates: List[Candidate]
 
-class MatchedSkill(BaseModel):
-    requiredSkill: str
-    candidateSkill: str
-    matchType: str
+class UserProfile(BaseModel):
+    id: str
+    skills: List[Skill]
+
+
+class ProjectProfile(BaseModel):
+    id: str
+    skills: List[Skill]
+
+
+class ProjectCandidate(BaseModel):
+    id: str
+    title: str
+    skills: List[Skill]
+
+
+class DeveloperCandidate(BaseModel):
+    id: str
+    name: str
+    skills: List[Skill]
+
+
+class ProjectRecommendationRequest(BaseModel):
+    user: UserProfile
+    candidates: List[ProjectCandidate]
+
+
+class DeveloperRecommendationRequest(BaseModel):
+    project: ProjectProfile
+    candidates: List[DeveloperCandidate]
+
+
+class RecommendationItem(BaseModel):
+    id: str
     score: float
 
-class RecommendationResult(BaseModel):
-    userId: str
-    score: float
-    percentage: float
-    matchedCount: int
-    requiredCount: int
-    matchedSkills: List[MatchedSkill]
 
 class RecommendationResponse(BaseModel):
-    success: bool
-    recommendations: List[RecommendationResult]
+    recommendations: List[RecommendationItem]
