@@ -46,35 +46,49 @@ export const completeOnboarding = async (userId, updateData, fileBuffer) => {
     }
 
     if (bio !== undefined) user.bio = bio;
-    if (college) user.college = typeof college === 'string' ? JSON.parse(college) : college;
+    if (college) {
+        if (typeof college === "string") {
+            try {
+                user.college = JSON.parse(college);
+            } catch {
+                const error = new Error(
+                    "Invalid college data"
+                );
+                error.statusCode = 400;
+                throw error;
+            }
+        } else {
+            user.college = college;
+        }
+    }
     if (experience) user.experience = experience;
     if (githubUrl !== undefined) user.githubUrl = githubUrl;
     if (linkedinUrl !== undefined) user.linkedinUrl = linkedinUrl;
     user.isOnboarded = true;
 
     await user.save();
-    return await User.findById(userId).populate('skills', 'displayName normalizedName');
+    return await User.findById(userId).populate('skills', 'displayName name');
 };
 
 export const getUserById = async (userId) => {
-  const user = await User.findById(userId).populate('skills', 'displayName normalizedName');
-  if (!user) {
-    const error = new Error('User not found');
-    error.statusCode = 404;
-    throw error;
-  }
-  return user;
+    const user = await User.findById(userId).populate('skills', 'name displayName ');
+    if (!user) {
+        const error = new Error('User not found');
+        error.statusCode = 404;
+        throw error;
+    }
+    return user;
 };
 
 export const getAllDevelopers = async (query = {}) => {
-  const filter = { isOnboarded: true };
+    const filter = { isOnboarded: true };
 
-  if (query.skill) {
-    filter.rawSkills = { $regex: query.skill, $options: 'i' };
-  }
+    if (query.skill) {
+        filter.rawSkills = { $regex: query.skill, $options: 'i' };
+    }
 
-  return await User.find(filter)
-    .select('-password')
-    .populate('skills', 'displayName normalizedName')
-    .sort({ createdAt: -1 });
+    return await User.find(filter)
+        .select('-password')
+        .populate('skills', 'name displayName')
+        .sort({ createdAt: -1 });
 };

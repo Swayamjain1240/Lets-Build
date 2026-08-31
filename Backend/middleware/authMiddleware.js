@@ -1,39 +1,47 @@
-import jwt from "jsonwebtoken"
-import User from "../model/userModel.js"
+import jwt from "jsonwebtoken";
+import User from "../model/userModel.js";
 
 export const protect = async (req, res, next) => {
-    let token;
+
+    const authHeader = req.headers.authorization;
 
     if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
+        !authHeader ||
+        !authHeader.startsWith("Bearer ")
     ) {
+        return res.status(401).json({
+            success: false,
+            message: "Not authorized, no token provided",
+        });
+    }
 
-        try {
-            token = req.headers.authorization.split(' ')[1];
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    try {
 
-            req.user = await User.findById(decoded.id).select('-password');
+        const token = authHeader.split(" ")[1];
 
-            if (!req.user) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'User not found or authorization failed',
-                });
-            }
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
 
-            next();
-        } catch (error) {
+        req.user = await User.findById(
+            decoded.id
+        ).select("-password");
+
+        if (!req.user) {
             return res.status(401).json({
                 success: false,
-                message: 'Not authorized, token failed',
+                message: "User not found",
             });
         }
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: 'Not authorized, no token provided',
-            });
-        }
+
+        next();
+
+    } catch (error) {
+
+        return res.status(401).json({
+            success: false,
+            message: "Not authorized, token failed",
+        });
     }
 };
