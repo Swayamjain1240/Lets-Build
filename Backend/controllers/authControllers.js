@@ -53,8 +53,6 @@ export const getMe = async (req, res, next) => {
   }
 };
 
-
-
 export const logout = async (req, res, next) => {
   try {
     res.status(200).json({
