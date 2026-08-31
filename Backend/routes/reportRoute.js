@@ -1,5 +1,5 @@
 import express from "express"
-import {protect, authorize} from "../middleware/authMiddleware.js"
+import {protect} from "../middleware/authMiddleware.js"
 
 import {createReport, getAllReports, updateReportStatus} from "../controllers/reportController.js"
 
