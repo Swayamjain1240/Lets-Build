@@ -26,7 +26,7 @@ export const createRecruitmentPost = async (userId, postData) => {
 
   return await Recruitment.findById(recruitment._id)
     .populate('project', 'title status owner')
-    .populate('requiredSkills', 'displayName normalizedName');
+    .populate('requiredSkills', 'name displayName ');
 };
 
 export const getPublicRecruitments = async (query = {}) => {
@@ -35,9 +35,9 @@ export const getPublicRecruitments = async (query = {}) => {
   return await Recruitment.find(filter)
     .populate({
       path: 'project',
-      select: 'title status owner',
-      populate: { path: 'owner', select: 'name email profilePicture' },
+      select: 'status owner',
+      populate: { path: 'owner', select: 'name profilePicture' },
     })
-    .populate('requiredSkills', 'displayName normalizedName')
+    .populate('requiredSkills', 'name displayName ')
     .sort({ createdAt: -1 });
 };

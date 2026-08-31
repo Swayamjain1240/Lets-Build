@@ -41,14 +41,14 @@ const userSchema = new mongoose.Schema(
       enum: ['Beginner', 'Intermediate', 'Advanced'],
       default: 'Beginner',
     },
-    // References to canonical Skill documents
+
     skills: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Skill',
       },
     ],
-    // Preserved raw string array for AI service payloads
+
     rawSkills: [
       {
         type: String,

@@ -4,7 +4,15 @@ import { getIO } from "../sockets/socket.js"
 
 export const getOrCreateConversation = async (senderId, receiverId) => {
     let conversation = await Conversation.findOne({
-        participants: { $all: [senderId, receiverId] },
+        participants: {
+            $all: [senderId, receiverId],
+        },
+        $expr: {
+            $eq: [
+                { $size: "$participants" },
+                2,
+            ],
+        },
     }).populate('participants', 'name profilePicture email');
 
     if (!conversation) {
@@ -42,7 +50,7 @@ export const sendMessage = async (conversationId, senderId, text) => {
     const message = await Message.create({
         conversation: conversationId,
         sender: senderId,
-        text,
+        content: text,
     });
     const populatedMessage = await message.populate('sender', 'name profilePicture');
 
@@ -62,21 +70,21 @@ export const sendMessage = async (conversationId, senderId, text) => {
 };
 
 export const getConversationMessages = async (conversationId, userId) => {
-  const conversation = await Conversation.findById(conversationId);
+    const conversation = await Conversation.findById(conversationId);
 
-  if (!conversation) {
-    const error = new Error('Conversation not found');
-    error.statusCode = 404;
-    throw error;
-  }
+    if (!conversation) {
+        const error = new Error('Conversation not found');
+        error.statusCode = 404;
+        throw error;
+    }
 
-  if (!conversation.participants.map((p) => p.toString()).includes(userId.toString())) {
-    const error = new Error('Not authorized to access messages');
-    error.statusCode = 403;
-    throw error;
-  }
+    if (!conversation.participants.map((p) => p.toString()).includes(userId.toString())) {
+        const error = new Error('Not authorized to access messages');
+        error.statusCode = 403;
+        throw error;
+    }
 
-  return await Message.find({ conversation: conversationId })
-    .populate('sender', 'name profilePicture')
-    .sort({ createdAt: 1 });
+    return await Message.find({ conversation: conversationId })
+        .populate('sender', 'name profilePicture')
+        .sort({ createdAt: 1 });
 };

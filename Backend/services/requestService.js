@@ -3,62 +3,143 @@ import Project from "../model/projectModel.js"
 import Notification from "../model/notificationModel.js"
 
 export const createRequest = async (senderId, requestData) => {
-    const { projectId, receiverId, type, message } = requestData;
-
-    const project = await Project.findById(projectId);
-    if (!project) {
-        const error = new Error('Project not found');
-        error.statusCode = 404;
-        throw error;
-    }
+  const {
+    projectId,
+    receiverId,
+    type,
+    message,
+  } = requestData;
 
 
-    const isAlreadyMember = project.teamMembers.some(
-        (member) => member.user.toString() === (type === 'JOIN_REQUEST' ? senderId : receiverId).toString()
+  const project = await Project.findById(projectId);
+
+  if (!project) {
+    const error = new Error("Project not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+
+  // Cannot send request to yourself
+  if (
+    senderId.toString() === receiverId.toString()
+  ) {
+    const error = new Error(
+      "You cannot send a request to yourself"
     );
 
-    if (isAlreadyMember) {
-        const error = new Error('User is already a team member of this project');
-        error.statusCode = 400;
-        throw error;
-    }
+    error.statusCode = 400;
+    throw error;
+  }
 
 
-    const existingRequest = await Request.findOne({
-        project: projectId,
-        sender: senderId,
-        receiver: receiverId,
-        status: 'PENDING',
-    });
+  // Only owner can send invitations
+  if (
+    type === "INVITATION" &&
+    project.owner.toString() !== senderId.toString()
+  ) {
+    const error = new Error(
+      "Only project owner can send invitations"
+    );
 
-    if (existingRequest) {
-        const error = new Error('A pending request/invitation already exists');
-        error.statusCode = 400;
-        throw error;
-    }
-
-    const newRequest = await Request.create({
-        project: projectId,
-        sender: senderId,
-        receiver: receiverId,
-        type,
-        message,
-        status: 'PENDING',
-    });
+    error.statusCode = 403;
+    throw error;
+  }
 
 
-    await Notification.create({
-        recipient: receiverId,
-        sender: senderId,
-        type: type === 'JOIN_REQUEST' ? 'JOIN_REQUEST_RECEIVED' : 'INVITATION_RECEIVED',
-        project: projectId,
-        request: newRequest._id,
-    });
+  // Join request must go to owner
+  if (
+    type === "JOIN_REQUEST" &&
+    project.owner.toString() !== receiverId.toString()
+  ) {
+    const error = new Error(
+      "Join request must be sent to the project owner"
+    );
 
-    return await Request.findById(newRequest._id)
-        .populate('sender', 'name email profilePicture')
-        .populate('receiver', 'name email profilePicture')
-        .populate('project', 'title owner');
+    error.statusCode = 400;
+    throw error;
+  }
+
+
+  const memberId =
+    type === "JOIN_REQUEST"
+      ? senderId
+      : receiverId;
+
+
+  const isAlreadyMember =
+    project.teamMembers.some(
+      (member) =>
+        member.user.toString() ===
+        memberId.toString()
+    );
+
+
+  if (isAlreadyMember) {
+    const error = new Error(
+      "User is already a team member of this project"
+    );
+
+    error.statusCode = 400;
+    throw error;
+  }
+
+
+  const existingRequest = await Request.findOne({
+    project: projectId,
+    sender: senderId,
+    receiver: receiverId,
+    status: "PENDING",
+  });
+
+
+  if (existingRequest) {
+    const error = new Error(
+      "A pending request/invitation already exists"
+    );
+
+    error.statusCode = 400;
+    throw error;
+  }
+
+
+  const newRequest = await Request.create({
+    project: projectId,
+    sender: senderId,
+    receiver: receiverId,
+    type,
+    message,
+    status: "PENDING",
+  });
+
+
+  await Notification.create({
+    recipient: receiverId,
+    sender: senderId,
+
+    type:
+      type === "JOIN_REQUEST"
+        ? "JOIN_REQUEST_RECEIVED"
+        : "INVITATION_RECEIVED",
+
+    project: projectId,
+    request: newRequest._id,
+  });
+
+
+  return await Request.findById(newRequest._id)
+    .populate(
+      "sender",
+      "name email profilePicture"
+    )
+    .populate(
+      "receiver",
+      "name email profilePicture"
+    )
+    .populate(
+      "project",
+      "title owner"
+    );
 };
 
 export const respondToRequest = async (userId, requestId, status) => {
@@ -92,7 +173,7 @@ export const respondToRequest = async (userId, requestId, status) => {
 
   if (status === 'ACCEPTED') {
     const memberToAdd = request.type === 'JOIN_REQUEST' ? request.sender : request.receiver;
-    
+
     await Project.findByIdAndUpdate(request.project._id, {
       $addToSet: {
         teamMembers: { user: memberToAdd, role: 'Collaborator', joinedAt: new Date() },

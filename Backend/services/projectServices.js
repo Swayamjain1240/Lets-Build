@@ -24,12 +24,12 @@ export const createProject = async (ownerId, projectData) => {
         teamMembers: [{ user: ownerId, role: 'Owner' }],
     })
 
-    return await Project,findById(project._id).populate("owner",'name email profilePicture' ).populate('requiredSkills', 'displayName normalizedName');
+    return await Project.findById(project._id).populate("owner",'name email profilePicture' ).populate('requiredSkills', 'name displayName');
 };
 
 export const getOwnerProjects = async (ownerId) => {
   return await Project.find({ owner: ownerId })
-    .populate('requiredSkills', 'displayName normalizedName')
+    .populate('requiredSkills', 'name displayName')
     .populate('teamMembers.user', 'name email profilePicture')
     .sort({ createdAt: -1 });
 };
@@ -37,7 +37,7 @@ export const getOwnerProjects = async (ownerId) => {
 export const getProjectById = async (projectId, userId) => {
   const project = await Project.findById(projectId)
     .populate('owner', 'name email profilePicture bio')
-    .populate('requiredSkills', 'displayName normalizedName')
+    .populate('requiredSkills', 'name displayName')
     .populate('teamMembers.user', 'name email profilePicture experience skills');
 
   if (!project) {
@@ -94,5 +94,5 @@ export const updateProject = async (projectId, userId, updateData) => {
   await project.save();
   return await Project.findById(projectId)
     .populate('owner', 'name email profilePicture')
-    .populate('requiredSkills', 'displayName normalizedName');
+    .populate('requiredSkills', 'name displayName');
 };
