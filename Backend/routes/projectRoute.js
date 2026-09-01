@@ -9,6 +9,6 @@ router.use(protect);
 router.post("/", createProject);
 router.get("/my-project", getMyProjects);
 router.get("/:id", getProjectDetails);
-router.options("/:id", updateProject);
+router.put("/:id", updateProject);
 
 export default router;
