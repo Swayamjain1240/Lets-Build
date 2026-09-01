@@ -20,13 +20,16 @@ def rank_candidates(
             2
         )
 
-        ranked_candidates.append({
-            "id": candidate.get("id"),
-            "score": score_percentage
-        })
+        if score_percentage > 0:
+
+            ranked_candidates.append({
+                "id": candidate.get("id"),
+                "score": score_percentage
+            })
 
     ranked_candidates.sort(
-        key=lambda candidate: candidate["score"],
+        key=lambda candidate:
+            candidate["score"],
         reverse=True
     )
 

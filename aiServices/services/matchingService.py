@@ -53,34 +53,60 @@ def match_candidate(
     matched_skills = []
     total_score = 0.0
 
+    used_candidate_indexes = set()
+
     for required_skill in required_skills:
 
         best_match = None
         best_score = 0.0
+        best_index = None
 
-        for candidate_skill in candidate_skills:
+        for index, candidate_skill in enumerate(
+            candidate_skills
+        ):
+
+            if index in used_candidate_indexes:
+                continue
 
             result = match_skill(
                 required_skill,
                 candidate_skill
             )
 
-            if result["matched"] and result["score"] > best_score:
-
+            if (
+                result["matched"]
+                and result["score"] > best_score
+            ):
                 best_score = result["score"]
+                best_index = index
 
                 best_match = {
-                    "requiredSkill": required_skill["displayName"],
-                    "candidateSkill": candidate_skill["displayName"],
-                    "matchType": result["matchType"],
-                    "score": result["score"]
+                    "requiredSkill":
+                        required_skill["displayName"],
+
+                    "candidateSkill":
+                        candidate_skill["displayName"],
+
+                    "matchType":
+                        result["matchType"],
+
+                    "score":
+                        result["score"]
                 }
 
         if best_match:
+
             matched_skills.append(best_match)
+
             total_score += best_score
 
-    final_score = total_score / len(required_skills)
+            used_candidate_indexes.add(
+                best_index
+            )
+
+    final_score = (
+        total_score / len(required_skills)
+    )
 
     return {
         "matchedSkills": matched_skills,
