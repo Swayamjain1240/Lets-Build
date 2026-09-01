@@ -1,4 +1,5 @@
 import * as userService from "../services/userService.js"
+import User from "../model/userModel.js"
 
 export const onboarding = async (req, res, next) => {
   try {
@@ -34,17 +35,20 @@ export const getProfile = async (req, res, next) => {
   }
 };
 
-export const getUserProfileById = async (req, res, next) => {
-  try {
-    const user = await userService.getUserById(req.params.id);
+export const getPublicUserById = async (userId) => {
+  const user = await User.findById(userId)
+    .select(
+      "name profilePicture bio college experience skills githubUrl linkedinUrl isOnboarded"
+    )
+    .populate("skills", "name displayName");
 
-    res.status(200).json({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    next(error);
+  if (!user) {
+    const error = new Error("User not found");
+    error.statusCode = 404;
+    throw error;
   }
+
+  return user;
 };
 
 export const updateProfile = async (req, res, next) => {

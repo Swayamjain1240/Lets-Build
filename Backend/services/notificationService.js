@@ -1,5 +1,6 @@
 import Notification from "../model/notificationModel.js"
 import { getIO } from "../sockets/socket.js"
+import mongoose from "mongoose";
 
 export const createAndSendNotification = async ({ recipient, sender, type, project, request }) => {
   const notification = await Notification.create({
@@ -33,6 +34,15 @@ export const getUserNotifications = async (userId) => {
 };
 
 export const markAsRead = async (notificationId, userId) => {
+
+  if (!mongoose.isValidObjectId(notificationId)) {
+    const error = new Error(
+      "Invalid notification ID"
+    );
+    error.statusCode = 400;
+    throw error;
+  }
+
   const notification = await Notification.findById(notificationId);
 
   if (!notification) {

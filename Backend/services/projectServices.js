@@ -1,30 +1,31 @@
 import Project from "../model/projectModel.js"
 import { normalizeAndGetSkillIds } from "../utils/normalizeSkill.js"
+import mongoose from "mongoose";
 
 export const createProject = async (ownerId, projectData) => {
-    const { title, description, requiredSkills, status } = projectData;
+  const { title, description, requiredSkills, status } = projectData;
 
-    let rawSkillsList = [];
+  let rawSkillsList = [];
 
-    if (typeof requiredSkills === 'string') {
-        rawSkillsList = requiredSkills.split(',').map((s) => s.trim());
-    } else if (Array.isArray(requiredSkills)) {
-        rawSkillsList = requiredSkills;
-    }
+  if (typeof requiredSkills === 'string') {
+    rawSkillsList = requiredSkills.split(',').map((s) => s.trim());
+  } else if (Array.isArray(requiredSkills)) {
+    rawSkillsList = requiredSkills;
+  }
 
-    const normalizedSkillIds = await normalizeAndGetSkillIds(rawSkillsList);
+  const normalizedSkillIds = await normalizeAndGetSkillIds(rawSkillsList);
 
-    const project = await Project.create({
-        title,
-        description,
-        owner: ownerId,
-        requiredSkills: normalizedSkillIds,
-        rawRequiredSkills: rawSkillsList,
-        status: status || 'IDEATION',
-        teamMembers: [{ user: ownerId, role: 'Owner' }],
-    })
+  const project = await Project.create({
+    title,
+    description,
+    owner: ownerId,
+    requiredSkills: normalizedSkillIds,
+    rawRequiredSkills: rawSkillsList,
+    status: status || 'IDEATION',
+    teamMembers: [{ user: ownerId, role: 'Owner' }],
+  })
 
-    return await Project.findById(project._id).populate("owner",'name email profilePicture' ).populate('requiredSkills', 'name displayName');
+  return await Project.findById(project._id).populate("owner", 'name email profilePicture').populate('requiredSkills', 'name displayName');
 };
 
 export const getOwnerProjects = async (ownerId) => {
@@ -35,6 +36,16 @@ export const getOwnerProjects = async (ownerId) => {
 };
 
 export const getProjectById = async (projectId, userId) => {
+
+  if (!mongoose.isValidObjectId(projectId)) {
+    const error = new Error(
+      "Invalid project ID"
+    );
+
+    error.statusCode = 400;
+    throw error;
+  }
+
   const project = await Project.findById(projectId)
     .populate('owner', 'name email profilePicture bio')
     .populate('requiredSkills', 'name displayName')

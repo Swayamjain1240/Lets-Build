@@ -5,8 +5,12 @@ export const signup = async (req, res, next) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-      res.status(400);
-      throw new Error('Please provide all required fields');
+      const error = new Error(
+        "Please provide all required fields"
+      );
+
+      error.statusCode = 400;
+      throw error;
     }
 
     const data = await authService.registerUser({ name, email, password });
@@ -26,8 +30,12 @@ export const login = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      res.status(400);
-      throw new Error('Please provide email and password');
+      const error = new Error(
+        "Please provide email and password"
+      );
+
+      error.statusCode = 400;
+      throw error;
     }
 
     const data = await authService.authenticateUser({ email, password });

@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import mongoose from "mongoose";
 import User from "../model/userModel.js";
 import Project from "../model/projectModel.js";
 import Recruitment from "../model/recruitmentModel.js";
@@ -21,13 +21,13 @@ export const getRecommendedProjectsForUser = async (userId) => {
   const userSkills =
     user.skills.length > 0
       ? user.skills.map((skill) => ({
-          name: skill.name,
-          displayName: skill.displayName,
-        }))
+        name: skill.name,
+        displayName: skill.displayName,
+      }))
       : user.rawSkills.map((skill) => ({
-          name: skill,
-          displayName: skill,
-        }));
+        name: skill,
+        displayName: skill,
+      }));
 
 
   const recruitments = await Recruitment.find({
@@ -118,6 +118,16 @@ export const getRecommendedDevelopersForProject = async (
   projectId,
   ownerId
 ) => {
+
+  if (!mongoose.isValidObjectId(projectId)) {
+    const error = new Error(
+      "Invalid project ID"
+    );
+
+    error.statusCode = 400;
+    throw error;
+  }
+  
   const project = await Project.findById(projectId)
     .populate("requiredSkills", "name displayName");
 
@@ -142,13 +152,13 @@ export const getRecommendedDevelopersForProject = async (
   const projectSkills =
     project.requiredSkills.length > 0
       ? project.requiredSkills.map((skill) => ({
-          name: skill.name,
-          displayName: skill.displayName,
-        }))
+        name: skill.name,
+        displayName: skill.displayName,
+      }))
       : project.rawRequiredSkills.map((skill) => ({
-          name: skill,
-          displayName: skill,
-        }));
+        name: skill,
+        displayName: skill,
+      }));
 
 
   const developers = await User.find({
@@ -176,13 +186,13 @@ export const getRecommendedDevelopersForProject = async (
       skills:
         dev.skills.length > 0
           ? dev.skills.map((skill) => ({
-              name: skill.name,
-              displayName: skill.displayName,
-            }))
+            name: skill.name,
+            displayName: skill.displayName,
+          }))
           : dev.rawSkills.map((skill) => ({
-              name: skill,
-              displayName: skill,
-            })),
+            name: skill,
+            displayName: skill,
+          })),
     })),
   };
 
