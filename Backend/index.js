@@ -27,20 +27,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin:"http://localhost:5173",
-    credentials: true,
+  origin: "http://localhost:5173",
+  credentials: true,
 }))
 
-app.use((err, req, res, next) => {
-  const statusCode =
-    err.statusCode || 500;
-
-  res.status(statusCode).json({
-    success: false,
-    message:
-      err.message || "Internal server error",
-  });
-});
 
 
 app.use("/api/auth", authRoute);
@@ -54,9 +44,27 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/communication', communicationRoutes);
 app.use('/api/reports', reportRoutes);
 
-const server = app.listen(PORT, ()=>{
-    console.log(`server is running on PORT ${PORT}`)
-    connectDB();
-});
+app.use((err, req, res, next) => {
+  const statusCode =
+    err.statusCode || 500;
 
-initSocket(server)
+  res.status(statusCode).json({
+    success: false,
+    message:
+      err.message || "Internal server error",
+  });
+});
+const startServer = async () => {
+
+  await connectDB();
+
+  const server = app.listen(PORT, () => {
+    console.log(
+      `Server is running on PORT ${PORT}`
+    );
+  });
+
+  initSocket(server);
+};
+
+startServer();
