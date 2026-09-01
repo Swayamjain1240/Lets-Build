@@ -8,6 +8,12 @@ export const getOrCreateConversation = async (req, res, next) => {
       receiverId
     );
 
+    if (!receiverId) {
+      const error = new Error("receiverId is required");
+      error.statusCode = 400;
+      throw error;
+    }
+
     res.status(200).json({
       success: true,
       data: conversation,
@@ -34,11 +40,21 @@ export const getUserConversations = async (req, res, next) => {
 export const sendMessage = async (req, res, next) => {
   try {
     const { conversationId, text } = req.body;
+
+    if (!conversationId || !text || !text.trim()) {
+      const error = new Error(
+        "conversationId and message text are required"
+      );
+      error.statusCode = 400;
+      throw error;
+    }
     const message = await communicationService.sendMessage(
       conversationId,
       req.user._id,
       text
     );
+
+
 
     res.status(201).json({
       success: true,

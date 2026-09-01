@@ -4,8 +4,14 @@ export const createProject = async (req, res, next) => {
   try {
     const { title, description } = req.body;
     if (!title || !description) {
-      res.status(400);
-      throw new Error('Project title and description are required');
+
+      const error = new Error(
+        "Project title and description are required"
+      );
+
+      error.statusCode = 400;
+
+      throw error;
     }
 
     const project = await projectService.createProject(req.user._id, req.body);

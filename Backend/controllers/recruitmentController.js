@@ -4,8 +4,13 @@ export const createRecruitment = async (req, res, next) => {
   try {
     const { projectId, title, publicSummary } = req.body;
     if (!projectId || !title || !publicSummary) {
-      res.status(400);
-      throw new Error('Please provide projectId, title, and publicSummary');
+      const error = new Error(
+        "Please provide projectId, title, and publicSummary"
+      );
+
+      error.statusCode = 400;
+
+      throw error;
     }
 
     const recruitment = await recruitmentService.createRecruitmentPost(

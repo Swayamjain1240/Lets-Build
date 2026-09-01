@@ -1,6 +1,7 @@
 import User from "../model/userModel.js"
 import cloudinary from "../config/cloudinary.js"
 import { normalizeAndGetSkillIds } from "../utils/normalizeSkill.js"
+import mongoose from "mongoose";
 
 const uploadToCloudinary = (fileBuffer) => {
 
@@ -71,12 +72,22 @@ export const completeOnboarding = async (userId, updateData, fileBuffer) => {
 };
 
 export const getUserById = async (userId) => {
-    const user = await User.findById(userId).populate('skills', 'name displayName ');
+
+    if (!mongoose.isValidObjectId(userId)) {
+        const error = new Error("Invalid user ID");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const user = await User.findById(userId)
+        .populate("skills", "name displayName");
+
     if (!user) {
-        const error = new Error('User not found');
+        const error = new Error("User not found");
         error.statusCode = 404;
         throw error;
     }
+
     return user;
 };
 

@@ -2,13 +2,21 @@ import * as reportService from "../services/reportService.js"
 
 export const createReport = async (req, res, next) => {
   try {
-    const { reportedType, reportedId, reason, description } = req.body;
+    const { reportedType, reportedId, reason } = req.body;
     const report = await reportService.createReport(req.user._id, {
       reportedType,
       reportedId,
       reason,
-      description,
     });
+
+    if (!reportedType || !reportedId || !reason) {
+      const error = new Error(
+        "reportedType, reportedId and reason are required"
+      );
+
+      error.statusCode = 400;
+      throw error;
+    }
 
     res.status(201).json({
       success: true,

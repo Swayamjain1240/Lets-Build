@@ -31,6 +31,17 @@ app.use(cors({
     credentials: true,
 }))
 
+app.use((err, req, res, next) => {
+  const statusCode =
+    err.statusCode || 500;
+
+  res.status(statusCode).json({
+    success: false,
+    message:
+      err.message || "Internal server error",
+  });
+});
+
 
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);

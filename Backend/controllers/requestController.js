@@ -4,8 +4,21 @@ export const createRequest = async (req, res, next) => {
   try {
     const { projectId, receiverId, type } = req.body;
     if (!projectId || !receiverId || !type) {
-      res.status(400);
-      throw new Error('Please provide projectId, receiverId, and request type');
+      const error = new Error(
+        "Please provide projectId, receiverId, and request type"
+      );
+
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (!["JOIN_REQUEST", "INVITATION"].includes(type)) {
+      const error = new Error(
+        "Request type must be JOIN_REQUEST or INVITATION"
+      );
+
+      error.statusCode = 400;
+      throw error;
     }
 
     const request = await requestService.createRequest(req.user._id, req.body);

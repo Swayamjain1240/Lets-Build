@@ -1,8 +1,33 @@
 import Conversation from "../model/conversationModel.js"
 import Message from "../model/messageModel.js"
 import { getIO } from "../sockets/socket.js"
+import mongoose from "mongoose";
+import User from "../model/userModel.js";
 
 export const getOrCreateConversation = async (senderId, receiverId) => {
+
+    if (!mongoose.isValidObjectId(receiverId)) {
+        const error = new Error("Invalid receiver ID");
+        error.statusCode = 400;
+        throw error;
+    }
+    if (senderId.toString() === receiverId.toString()) {
+        const error = new Error(
+            "You cannot create a conversation with yourself"
+        );
+
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const receiver = await User.findById(receiverId);
+
+    if (!receiver) {
+        const error = new Error("Receiver not found");
+        error.statusCode = 404;
+        throw error;
+    }
+
     let conversation = await Conversation.findOne({
         participants: {
             $all: [senderId, receiverId],
@@ -21,6 +46,7 @@ export const getOrCreateConversation = async (senderId, receiverId) => {
         });
         conversation = await conversation.populate('participants', 'name profilePicture email');
     }
+
 
     return conversation;
 };
