@@ -13,12 +13,12 @@ import recruitmentRoute from "./routes/recruitmentRoute.js"
 import teamRouter from "./routes/teamRouter.js"
 import requestRouter from "./routes/requestRoute.js"
 import recommendationRouter from "./routes/recommendationRouter.js"
-import connectDB from "./config/db.js"
-import { initSocket } from "./sockets/socket.js"
 import notificationRoutes from "./routes/notificationRoute.js"
 import reportRoutes from "./routes/reportRoute.js"
 import communicationRoutes from "./routes/communicationRoute.js"
 
+import connectDB from "./config/db.js"
+import { initSocket } from "./sockets/socket.js"
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -54,6 +54,7 @@ app.use((err, req, res, next) => {
       err.message || "Internal server error",
   });
 });
+
 const startServer = async () => {
 
   await connectDB();
