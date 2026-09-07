@@ -20,7 +20,7 @@ export const initSocket = (server) => {
   });
 
 
-  // Authenticate socket connection
+  
   io.use((socket, next) => {
     try {
 
@@ -49,7 +49,7 @@ export const initSocket = (server) => {
 
   io.on("connection", (socket) => {
 
-    // Automatically join own notification room
+    
     socket.join(socket.userId.toString());
 
 
