@@ -9,6 +9,8 @@ import Login from "../pages/auth/Login.jsx";
 import Signup from "../pages/auth/Signup.jsx";
 import Onboarding from "../pages/onboarding/Onboarding.jsx";
 import Home from "../pages/home/Home.jsx";
+import Developers from "../pages/developers/Developers.jsx";
+
 
 import ProtectedRoute from "./ProtectRoute.jsx";
 import OnboardingRoute from "./OnboardingRoute.jsx";
@@ -44,14 +46,14 @@ export default function AppRoutes() {
         <Route path="/onboarding" element={<Onboarding />} />
       </Route>
 
-      {/* Completed users */}
+      
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
           <Route path="/home" element={<Home />} />
 
           <Route
             path="/developers"
-            element={<ComingSoon title="Developers" />}
+            element={<Developers />}
           />
 
           <Route
