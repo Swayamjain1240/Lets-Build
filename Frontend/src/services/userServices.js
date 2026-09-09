@@ -22,3 +22,13 @@ export const updateMyProfile = async (formData) => {
 
   return response.data;
 };
+
+export const getDevelopers = async () => {
+  const response = await api.get("/user/developers");
+  return response.data;
+}
+
+export const getDeveloperById = async (developerId) => {
+  const response = await api.get(`/user/${developerId}`);
+  return response.data;
+}
