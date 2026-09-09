@@ -184,8 +184,8 @@ const Landing = () => {
               absolute
               left-1/2
               top-0
-              h-[500px]
-              w-[700px]
+              h-125
+              w-175
               -translate-x-1/2
               rounded-full
               bg-brand-500/10
