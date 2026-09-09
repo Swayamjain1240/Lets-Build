@@ -2,6 +2,7 @@ import {Routes, Route} from "react-router-dom"
 import Landing from "../pages/home/Landing.jsx";
 import Login from "../pages/auth/Login.jsx"
 import Signup from "../pages/auth/Signup.jsx"
+import Onboarding from "../pages/onboarding/Onboarding";
 
 const HomePlaceHolder = ()=>{
     return(
@@ -18,6 +19,8 @@ const AppRoute = ()=>{
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            
         </Routes>
     )
 }
