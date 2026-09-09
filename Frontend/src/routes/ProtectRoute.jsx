@@ -1,51 +1,33 @@
-import {Navigate,Outlet,} from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+
 import useAuth from "../hooks/useAuth";
+import SessionScreen from "../components/common/SessionScreen";
 
+export default function ProtectedRoute() {
+  const { user, loading } = useAuth();
+  const location = useLocation();
 
-const ProtectedRoute = () => {
-  const {user,loading,} = useAuth();
-
+  // 1. Wait while AuthContext restores the session.
   if (loading) {
-
-    return (
-      <div
-        className="
-          flex
-          min-h-screen
-          items-center
-          justify-center
-          bg-background
-        "
-      >
-        <div
-          className="
-            h-6
-            w-6
-            animate-spin
-            rounded-full
-            border-2
-            border-border
-            border-t-brand-400
-          "
-        />
-      </div>
-    );
+    return <SessionScreen />;
   }
 
-
+  // 2. No authenticated user → Login.
   if (!user) {
-
     return (
       <Navigate
         to="/login"
+        state={{ from: location }}
         replace
       />
     );
   }
 
+  // 3. Authenticated but onboarding incomplete.
+  if (!user.isOnboarded) {
+    return <Navigate to="/onboarding" replace />;
+  }
 
+  // 4. Authenticated + onboarded → render protected page.
   return <Outlet />;
-};
-
-
-export default ProtectedRoute;
+}
