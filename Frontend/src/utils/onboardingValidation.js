@@ -24,18 +24,18 @@ export const FIELD_STEPS = {
   linkedinUrl: 3,
 };
 
-export const getOnboardingSkills = (value) => {
+export const getOnboardingSkills = (value = "") => {
   const seen = new Set();
 
-  return value
+  return String(value)
     .split(",")
     .map((skill) => skill.trim())
     .filter((skill) => {
-      const key = skill.toLowerCase();
+      const key = skill
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
 
-      if (!key || seen.has(key)) {
-        return false;
-      }
+      if (!key || seen.has(key)) return false;
 
       seen.add(key);
       return true;
@@ -43,7 +43,6 @@ export const getOnboardingSkills = (value) => {
 };
 
 export const validateProfilePicture = (file) => {
-
   if (!file) return "";
 
   if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
@@ -114,7 +113,6 @@ export const validateOnboardingStep = (step, data) => {
 
   if (step === 2) {
     const college = data.college;
-
     const name = college.name.trim();
     const branch = college.branch.trim();
     const year = String(college.passingYear ?? "").trim();
@@ -156,13 +154,8 @@ export const validateOnboardingStep = (step, data) => {
       "linkedin.com"
     );
 
-    if (githubError) {
-      errors.githubUrl = githubError;
-    }
-
-    if (linkedinError) {
-      errors.linkedinUrl = linkedinError;
-    }
+    if (githubError) errors.githubUrl = githubError;
+    if (linkedinError) errors.linkedinUrl = linkedinError;
   }
 
   return errors;
