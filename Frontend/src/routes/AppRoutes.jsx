@@ -46,7 +46,7 @@ export default function AppRoutes() {
         <Route path="/onboarding" element={<Onboarding />} />
       </Route>
 
-      
+
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
           <Route path="/home" element={<Home />} />
@@ -87,8 +87,8 @@ export default function AppRoutes() {
           />
 
           <Route
-            path="/profile"
-            element={<ComingSoon title="My Profile" />}
+            path="/profile/edit"
+            element={<EditProfile />}
           />
         </Route>
       </Route>
