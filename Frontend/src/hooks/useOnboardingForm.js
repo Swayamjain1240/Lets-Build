@@ -5,15 +5,15 @@ import {
   validateOnboarding,
   validateOnboardingStep,
   validateProfilePicture,
-} from "../utils/onboardingValidation";
+} from "../utils/onboardingValidation.js";
 
 import {
   buildOnboardingPayload,
-} from "../utils/onboardingPayload";
+} from "../utils/onboardingPayload.js";
 
 import {
   completeOnboarding,
-} from "../services/userService";
+} from "../services/userServices.js";
 
 const initialData = {
   profilePicture: null,

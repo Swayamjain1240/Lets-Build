@@ -4,16 +4,16 @@ import {
   Routes,
 } from "react-router-dom";
 
-import Landing from "../pages/home/Landing";
-import Login from "../pages/auth/Login";
-import Signup from "../pages/auth/Signup";
-import Onboarding from "../pages/onboarding/Onboarding";
-import Home from "../pages/home/Home";
+import Landing from "../pages/home/Landing.jsx";
+import Login from "../pages/auth/Login.jsx";
+import Signup from "../pages/auth/Signup.jsx";
+import Onboarding from "../pages/onboarding/Onboarding.jsx";
+import Home from "../pages/home/Home.jsx";
 
-import ProtectedRoute from "./ProtectedRoute";
-import OnboardingRoute from "./OnboardingRoute";
-import PublicRoute from "./PublicRoute";
-import MainLayout from "../layouts/MainLayout";
+import ProtectedRoute from "./ProtectRoute.jsx";
+import OnboardingRoute from "./OnboardingRoute.jsx";
+import PublicRoute from "./PublicRoute.jsx";
+import MainLayout from "../layouts/MainLayout.jsx";
 
 const ComingSoon = ({ title }) => (
   <div className="rounded-2xl border border-border bg-surface p-8">

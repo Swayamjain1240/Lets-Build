@@ -2,18 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 
-import Button from "../../components/common/Button";
-import useAuth from "../../hooks/useAuth";
-import { getCurrentUser } from "../../services/authService";
-import { gsap, useGSAP } from "../../lib/gsap";
+import Button from "../../components/common/Button.jsx";
+import useAuth from "../../hooks/useAuth.js";
+import { getCurrentUser } from "../../services/authService.js";
+import { gsap, useGSAP } from "../../lib/gsap.js";
 
-import useOnboardingForm from "../../hooks/useOnboardingForm";
-import OnboardingProgress from "./OnboardingProgress";
+import useOnboardingForm from "../../hooks/useOnboardingForm.js";
+import OnboardingProgress from "./OnboardingProgress.jsx";
 
-import AboutYouStep from "./steps/AboutYouStep";
-import SkillsStep from "./steps/SkillsStep";
-import EducationStep from "./steps/EducationStep";
-import ReviewStep from "./steps/ReviewStep";
+import AboutYouStep from "./steps/AboutYouStep.jsx";
+import SkillsStep from "./steps/SkillsStep.jsx";
+import EducationStep from "./steps/EducationStep.jsx";
+import ReviewStep from "./steps/ReviewStep.jsx";
 
 const steps = [
   {

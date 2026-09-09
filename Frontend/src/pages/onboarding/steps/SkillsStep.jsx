@@ -1,4 +1,4 @@
-import Input from "../../../components/common/Input";
+import Input from "../../../components/common/Input.jsx";
 
 export default function SkillsStep({ form }) {
   const { formData, errors, change } = form;

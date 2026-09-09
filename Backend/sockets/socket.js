@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
 
-import Conversation from "../model/conversationModel"
+import Conversation from "../model/conversationModel.js"
 
 let io;
 
