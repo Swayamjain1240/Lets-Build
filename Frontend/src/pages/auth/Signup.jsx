@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import AuthLayout from "../../layouts/AuthLayout";
-import Input from "../../components/common/Input";
-import Button from "../../components/common/Button";
-import { gsap, useGSAP } from "../../lib/gsap";
-import useAuth from "../../hooks/useAuth";
+import AuthLayout from "../../layouts/AuthLayout.jsx";
+import Input from "../../components/common/Input.jsx";
+import Button from "../../components/common/Button.jsx";
+import { gsap, useGSAP } from "../../lib/gsap.js";
+import useAuth from "../../hooks/useAuth.js";
 
 
 const Signup = () => {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
-import AppNavbar from "../components/layout/AppNavbar";
-import AppSidebar from "../components/layout/AppSidebar";
+import AppNavbar from "../components/layout/AppNavbar.jsx";
+import AppSidebar from "../components/layout/AppSidebar.jsx";
 
 export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

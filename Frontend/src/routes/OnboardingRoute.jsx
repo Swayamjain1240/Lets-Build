@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-import useAuth from "../hooks/useAuth";
-import SessionScreen from "../components/common/SessionScreen";
+import useAuth from "../hooks/useAuth.js";
+import SessionScreen from "../components/common/SessionScreen.jsx";
 
 export default function OnboardingRoute() {
   const { user, loading } = useAuth();

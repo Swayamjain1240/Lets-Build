@@ -1,7 +1,7 @@
-import Input from "../../../components/common/Input";
+import Input from "../../../components/common/Input.jsx";
 import {
   getOnboardingSkills,
-} from "../../../utils/onboardingValidation";
+} from "../../../utils/onboardingValidation.js";
 
 export default function ReviewStep({ form, user }) {
   const { formData, errors, change } = form;

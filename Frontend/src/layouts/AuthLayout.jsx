@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 import LandingNetworkScene
-  from "../three/LandingNetworkScene";
+  from "../three/LandingNetworkScene.jsx";
 
 
 const AuthLayout = ({
