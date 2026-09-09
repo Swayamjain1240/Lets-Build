@@ -5,18 +5,28 @@ export default function SkillsStep({ form }) {
 
   return (
     <div className="space-y-6">
-      <Input
-        id="skills"
-        name="skills"
-        label="Your skills"
-        value={formData.skills}
-        onChange={change}
-        placeholder="React, Node.js, MongoDB, Python"
-        error={errors.skills}
-      />
+      <div>
+        <Input
+          id="skills"
+          name="skills"
+          label="Your skills"
+          type="text"
+          value={formData.skills}
+          onChange={change}
+          placeholder="React, Node.js, MongoDB, Python"
+          error={errors.skills}
+        />
+
+        <p className="mt-2 text-xs text-muted">
+          Separate skills with commas.
+        </p>
+      </div>
 
       <div>
-        <label htmlFor="experience" className="mb-2 block text-sm">
+        <label
+          htmlFor="experience"
+          className="mb-2 block text-sm font-medium text-body"
+        >
           Experience level
         </label>
 
@@ -25,12 +35,31 @@ export default function SkillsStep({ form }) {
           name="experience"
           value={formData.experience}
           onChange={change}
-          className="w-full rounded-xl border border-border bg-surface px-4 py-3"
+          aria-invalid={Boolean(errors.experience)}
+          aria-describedby={
+            errors.experience
+              ? "experience-error"
+              : undefined
+          }
+          className="
+            w-full rounded-xl border border-border bg-surface
+            px-4 py-3 text-sm text-heading outline-none
+            focus:border-brand-500/60
+          "
         >
           <option value="Beginner">Beginner</option>
           <option value="Intermediate">Intermediate</option>
           <option value="Advanced">Advanced</option>
         </select>
+
+        {errors.experience && (
+          <p
+            id="experience-error"
+            className="mt-1.5 text-xs text-danger"
+          >
+            {errors.experience}
+          </p>
+        )}
       </div>
     </div>
   );
