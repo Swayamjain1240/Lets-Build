@@ -18,6 +18,9 @@ import EditProfile from "../pages/profile/EditProfile.jsx";
 
 import Projects from "../pages/projects/Projects.jsx";
 import CreateProject from "../pages/projects/CreateProject.jsx";
+import ProjectDetails from "../pages/projects/ProjectDetails.jsx";
+import EditProject from "../pages/projects/EditProject.jsx";
+
 
 import ProtectedRoute from "./ProtectRoute.jsx";
 import OnboardingRoute from "./OnboardingRoute.jsx";
@@ -89,12 +92,12 @@ export default function AppRoutes() {
 
           <Route
             path="/projects/:id"
-            element={<ComingSoon title="Project Workspace" />}
+            element={<ProjectDetails />}
           />
 
           <Route
             path="/projects/:id/edit"
-            element={<ComingSoon title="Edit Project" />}
+            element={<EditProject />}
           />
 
           <Route
