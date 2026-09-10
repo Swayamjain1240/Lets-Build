@@ -5,11 +5,14 @@ import {
 } from "react-router-dom";
 
 import Landing from "../pages/home/Landing.jsx";
+
 import Login from "../pages/auth/Login.jsx";
 import Signup from "../pages/auth/Signup.jsx";
+
 import Onboarding from "../pages/onboarding/Onboarding.jsx";
 
 import Home from "../pages/home/Home.jsx";
+
 import Developers from "../pages/developers/Developers.jsx";
 import DeveloperProfile from "../pages/developers/DeveloperProfile.jsx";
 
@@ -29,35 +32,40 @@ import EditRecruitment from "../pages/recruitments/EditRecruitment.jsx";
 import Recommendations from "../pages/recommendations/Recommendations.jsx";
 
 import Requests from "../pages/request/Requests.jsx";
+
 import Notifications from "../pages/notifications/Notifications.jsx";
+
+import Messages from "../pages/messages/Messages.jsx";
 
 import ProtectedRoute from "./ProtectRoute.jsx";
 import OnboardingRoute from "./OnboardingRoute.jsx";
 import PublicRoute from "./PublicRoute.jsx";
+
 import MainLayout from "../layouts/MainLayout.jsx";
-
-const ComingSoon = ({ title }) => (
-  <div className="rounded-2xl border border-border bg-surface p-8">
-    <h1 className="text-2xl font-semibold text-heading">
-      {title}
-    </h1>
-
-    <p className="mt-3 text-sm text-muted">
-      This feature will be built in the next chapters.
-    </p>
-  </div>
-);
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Landing />} />
+      {/* Public Landing */}
+      <Route
+        path="/"
+        element={<Landing />}
+      />
 
+      {/* Public Authentication */}
       <Route element={<PublicRoute />}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/signup"
+          element={<Signup />}
+        />
       </Route>
 
+      {/* Onboarding */}
       <Route element={<OnboardingRoute />}>
         <Route
           path="/onboarding"
@@ -65,10 +73,16 @@ export default function AppRoutes() {
         />
       </Route>
 
+      {/* Protected Application */}
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
-          <Route path="/home" element={<Home />} />
+          {/* Home */}
+          <Route
+            path="/home"
+            element={<Home />}
+          />
 
+          {/* Developers */}
           <Route
             path="/developers"
             element={<Developers />}
@@ -79,6 +93,7 @@ export default function AppRoutes() {
             element={<DeveloperProfile />}
           />
 
+          {/* Profile */}
           <Route
             path="/profile"
             element={<MyProfile />}
@@ -89,6 +104,7 @@ export default function AppRoutes() {
             element={<EditProfile />}
           />
 
+          {/* Projects */}
           <Route
             path="/projects"
             element={<Projects />}
@@ -109,6 +125,7 @@ export default function AppRoutes() {
             element={<EditProject />}
           />
 
+          {/* Recruitments */}
           <Route
             path="/recruitments"
             element={<Recruitments />}
@@ -129,21 +146,30 @@ export default function AppRoutes() {
             element={<EditRecruitment />}
           />
 
+          {/* AI Recommendations */}
           <Route
             path="/recommendations"
             element={<Recommendations />}
           />
 
+          {/* Collaboration Requests */}
           <Route
             path="/requests"
             element={<Requests />}
           />
 
+          {/* Messaging */}
           <Route
             path="/messages"
-            element={<ComingSoon title="Messages" />}
+            element={<Messages />}
           />
 
+          <Route
+            path="/messages/:conversationId"
+            element={<Messages />}
+          />
+
+          {/* Notifications */}
           <Route
             path="/notifications"
             element={<Notifications />}
@@ -151,9 +177,15 @@ export default function AppRoutes() {
         </Route>
       </Route>
 
+      {/* Fallback */}
       <Route
         path="*"
-        element={<Navigate to="/home" replace />}
+        element={
+          <Navigate
+            to="/home"
+            replace
+          />
+        }
       />
     </Routes>
   );
