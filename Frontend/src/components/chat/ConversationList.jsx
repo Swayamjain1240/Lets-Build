@@ -1,6 +1,4 @@
-import {
-  RefreshCw,
-} from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 import ConversationItem from "./ConversationItem.jsx";
 import ConversationSkeleton from "./ConversationSkeleton.jsx";

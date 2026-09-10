@@ -21,12 +21,15 @@ import ProfileEducation from "../../components/profile/ProfileEducation.jsx";
 import ProfileDetailSkeleton from "../../components/profile/ProfileDetailSkeleton.jsx";
 
 import DeveloperInviteSection from "../../components/request/DeveloperInviteSection.jsx";
+import StartConversationButton from "../../components/chat/StartConversationButton.jsx";
 
 import {
   getDeveloperById,
 } from "../../services/userServices.js";
 
-const extractDeveloper = (response) => {
+const extractDeveloper = (
+  response
+) => {
   return (
     response?.data?.user ||
     response?.data?.developer ||
@@ -38,8 +41,10 @@ const extractDeveloper = (response) => {
 export default function DeveloperProfile() {
   const { id } = useParams();
 
-  const [developer, setDeveloper] =
-    useState(null);
+  const [
+    developer,
+    setDeveloper,
+  ] = useState(null);
 
   const [loading, setLoading] =
     useState(true);
@@ -65,18 +70,18 @@ export default function DeveloperProfile() {
         const response =
           await getDeveloperById(id);
 
-        const developerData =
-          extractDeveloper(response);
+        const data =
+          extractDeveloper(
+            response
+          );
 
-        if (!developerData?._id) {
+        if (!data?._id) {
           throw new Error(
             "Developer not found."
           );
         }
 
-        setDeveloper(
-          developerData
-        );
+        setDeveloper(data);
       } catch (err) {
         console.error(
           "Failed to load developer:",
@@ -105,7 +110,10 @@ export default function DeveloperProfile() {
     );
   }
 
-  if (error || !developer) {
+  if (
+    error ||
+    !developer
+  ) {
     return (
       <div className="rounded-2xl border border-border bg-surface p-10 text-center">
         <h2 className="text-lg font-semibold text-heading">
@@ -123,17 +131,17 @@ export default function DeveloperProfile() {
             className="inline-flex items-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-heading hover:bg-background"
           >
             <ArrowLeft size={16} />
-
             Back to developers
           </Link>
 
           <button
             type="button"
-            onClick={fetchDeveloper}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:opacity-90"
+            onClick={
+              fetchDeveloper
+            }
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-medium text-white"
           >
             <RefreshCw size={16} />
-
             Try again
           </button>
         </div>
@@ -145,16 +153,21 @@ export default function DeveloperProfile() {
     <div className="space-y-5">
       <Link
         to="/developers"
-        className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-heading"
+        className="inline-flex items-center gap-2 text-sm text-muted hover:text-heading"
       >
         <ArrowLeft size={16} />
-
         Back to developers
       </Link>
 
       <ProfileHeader
         user={developer}
       />
+
+      <div className="flex flex-wrap gap-3">
+        <StartConversationButton
+          developer={developer}
+        />
+      </div>
 
       <DeveloperInviteSection
         developer={developer}
