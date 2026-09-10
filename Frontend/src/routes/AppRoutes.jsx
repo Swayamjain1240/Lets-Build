@@ -26,6 +26,8 @@ import CreateRecruitment from "../pages/recruitments/CreateRecruitment.jsx";
 import RecruitmentDetails from "../pages/recruitments/RecruitmentDetails.jsx";
 import EditRecruitment from "../pages/recruitments/EditRecruitment.jsx";
 
+import Recommendations from "../pages/recommendations/Recommendations.jsx";
+
 import ProtectedRoute from "./ProtectRoute.jsx";
 import OnboardingRoute from "./OnboardingRoute.jsx";
 import PublicRoute from "./PublicRoute.jsx";
@@ -126,7 +128,7 @@ export default function AppRoutes() {
 
           <Route
             path="/recommendations"
-            element={<ComingSoon title="Recommendations" />}
+            element={<Recommendations />}
           />
 
           <Route
