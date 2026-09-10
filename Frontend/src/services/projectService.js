@@ -43,3 +43,14 @@ export const deleteProject = async (projectId) => {
 
   return response.data;
 };
+
+export const removeProjectMember = async (
+  projectId,
+  memberId
+) => {
+  const response = await api.delete(
+    `${PROJECTS_URL}/${projectId}/team/${memberId}`
+  );
+
+  return response.data;
+};
