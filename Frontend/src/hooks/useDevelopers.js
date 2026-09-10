@@ -6,7 +6,7 @@ import {
 
 import {
   getDevelopers,
-} from "../services/userService";
+} from "../services/userService.js";
 
 export default function useDevelopers() {
   const [developers, setDevelopers] =

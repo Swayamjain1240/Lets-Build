@@ -8,9 +8,16 @@ import Landing from "../pages/home/Landing.jsx";
 import Login from "../pages/auth/Login.jsx";
 import Signup from "../pages/auth/Signup.jsx";
 import Onboarding from "../pages/onboarding/Onboarding.jsx";
+
 import Home from "../pages/home/Home.jsx";
 import Developers from "../pages/developers/Developers.jsx";
+import DeveloperProfile from "../pages/developers/DeveloperProfile.jsx";
 
+import MyProfile from "../pages/profile/MyProfile.jsx";
+import EditProfile from "../pages/profile/EditProfile.jsx";
+
+import Projects from "../pages/projects/Projects.jsx";
+import CreateProject from "../pages/projects/CreateProject.jsx";
 
 import ProtectedRoute from "./ProtectRoute.jsx";
 import OnboardingRoute from "./OnboardingRoute.jsx";
@@ -32,20 +39,19 @@ const ComingSoon = ({ title }) => (
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Public landing */}
       <Route path="/" element={<Landing />} />
 
-      {/* Login / Signup */}
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Route>
 
-      {/* Incomplete users */}
       <Route element={<OnboardingRoute />}>
-        <Route path="/onboarding" element={<Onboarding />} />
+        <Route
+          path="/onboarding"
+          element={<Onboarding />}
+        />
       </Route>
-
 
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
@@ -57,8 +63,38 @@ export default function AppRoutes() {
           />
 
           <Route
+            path="/developers/:id"
+            element={<DeveloperProfile />}
+          />
+
+          <Route
+            path="/profile"
+            element={<MyProfile />}
+          />
+
+          <Route
+            path="/profile/edit"
+            element={<EditProfile />}
+          />
+
+          <Route
             path="/projects"
-            element={<ComingSoon title="My Projects" />}
+            element={<Projects />}
+          />
+
+          <Route
+            path="/projects/new"
+            element={<CreateProject />}
+          />
+
+          <Route
+            path="/projects/:id"
+            element={<ComingSoon title="Project Workspace" />}
+          />
+
+          <Route
+            path="/projects/:id/edit"
+            element={<ComingSoon title="Edit Project" />}
           />
 
           <Route
@@ -84,11 +120,6 @@ export default function AppRoutes() {
           <Route
             path="/notifications"
             element={<ComingSoon title="Notifications" />}
-          />
-
-          <Route
-            path="/profile/edit"
-            element={<EditProfile />}
           />
         </Route>
       </Route>
