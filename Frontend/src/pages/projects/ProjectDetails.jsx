@@ -11,7 +11,7 @@ import { useState } from "react";
 
 import ProjectHeader from "../../components/project/ProjectHeader.jsx";
 import ProjectOverview from "../../components/project/ProjectOverview.jsx";
-import ProjectTeamPreview from "../../components/project/ProjectTeamPreview.jsx";
+import ProjectTeam from "../../components/project/ProjectTeam.jsx";
 import ProjectDetailSkeleton from "../../components/project/ProjectDetailSkeleton.jsx";
 
 import useProjectDetails from "../../hooks/useProjectDetails.js";
@@ -19,20 +19,31 @@ import useAuth from "../../hooks/useAuth.js";
 
 import {
   deleteProject,
+  removeProjectMember,
 } from "../../services/projectService.js";
 
-const getId = (value) =>
-  String(
-    typeof value === "object"
-      ? value?._id || ""
-      : value || ""
+const getId = (value) => {
+  if (!value) return "";
+
+  const actualValue =
+    value.user || value;
+
+  return String(
+    actualValue?._id ||
+      actualValue?.id ||
+      actualValue ||
+      ""
   );
+};
 
 export default function ProjectDetails() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
-  const { user } = useAuth();
+  const navigate =
+    useNavigate();
+
+  const { user } =
+    useAuth();
 
   const {
     project,
@@ -44,11 +55,18 @@ export default function ProjectDetails() {
   const [deleting, setDeleting] =
     useState(false);
 
-  const [deleteError, setDeleteError] =
+  const [
+    removingMemberId,
+    setRemovingMemberId,
+  ] = useState("");
+
+  const [actionError, setActionError] =
     useState("");
 
   if (loading) {
-    return <ProjectDetailSkeleton />;
+    return (
+      <ProjectDetailSkeleton />
+    );
   }
 
   if (error || !project) {
@@ -77,28 +95,32 @@ export default function ProjectDetails() {
 
   const isOwner =
     getId(project.owner) ===
-    getId(user?._id);
+    getId(user);
 
   const handleDelete = async () => {
-    const confirmed = window.confirm(
-      `Delete "${project.title}"? This action cannot be undone.`
-    );
+    if (deleting) return;
 
-    if (!confirmed || deleting) {
-      return;
-    }
+    const confirmed =
+      window.confirm(
+        `Delete "${project.title}"? This action cannot be undone.`
+      );
+
+    if (!confirmed) return;
 
     setDeleting(true);
-    setDeleteError("");
+    setActionError("");
 
     try {
-      await deleteProject(project._id);
+      await deleteProject(
+        project._id
+      );
 
-      navigate("/projects", {
-        replace: true,
-      });
+      navigate(
+        "/projects",
+        { replace: true }
+      );
     } catch (err) {
-      setDeleteError(
+      setActionError(
         err.response?.data?.message ||
           "Unable to delete project."
       );
@@ -106,6 +128,43 @@ export default function ProjectDetails() {
       setDeleting(false);
     }
   };
+
+  const handleRemoveMember =
+    async (member) => {
+      const memberId =
+        getId(member);
+
+      if (!memberId) return;
+
+      const confirmed =
+        window.confirm(
+          `Remove ${member.name || "this member"} from the project?`
+        );
+
+      if (!confirmed) return;
+
+      setRemovingMemberId(
+        memberId
+      );
+
+      setActionError("");
+
+      try {
+        await removeProjectMember(
+          project._id,
+          memberId
+        );
+
+        await refresh();
+      } catch (err) {
+        setActionError(
+          err.response?.data?.message ||
+            "Unable to remove team member."
+        );
+      } finally {
+        setRemovingMemberId("");
+      }
+    };
 
   return (
     <div className="space-y-5">
@@ -116,19 +175,29 @@ export default function ProjectDetails() {
         onDelete={handleDelete}
       />
 
-      {deleteError && (
-        <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-sm text-red-400">
-          {deleteError}
+      {actionError && (
+        <div
+          role="alert"
+          className="rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-sm text-red-400"
+        >
+          {actionError}
         </div>
       )}
 
-      <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+      <div className="grid gap-5 lg:grid-cols-[1.45fr_1fr]">
         <ProjectOverview
           project={project}
         />
 
-        <ProjectTeamPreview
+        <ProjectTeam
           project={project}
+          isOwner={isOwner}
+          removingMemberId={
+            removingMemberId
+          }
+          onRemoveMember={
+            handleRemoveMember
+          }
         />
       </div>
     </div>
