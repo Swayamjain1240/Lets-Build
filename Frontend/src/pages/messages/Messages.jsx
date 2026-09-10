@@ -13,7 +13,7 @@ import {
 
 import ConversationList from "../../components/chat/ConversationList.jsx";
 import ConversationEmptyState from "../../components/chat/ConversationEmptyState.jsx";
-import ConversationPreview from "../../components/chat/ConversationPreview.jsx";
+import ChatRoom from "../../components/chat/ChatRoom.jsx";
 
 import useConversations from "../../hooks/useConversations.js";
 import useAuth from "../../hooks/useAuth.js";
@@ -47,12 +47,6 @@ export default function Messages() {
       ]
     );
 
-  const hasActiveConversation =
-    Boolean(
-      conversationId &&
-      activeConversation
-    );
-
   const conversationMissing =
     Boolean(
       conversationId &&
@@ -80,8 +74,8 @@ export default function Messages() {
           </h1>
 
           <p className="mt-2 text-sm text-muted">
-            Connect and collaborate
-            with developers.
+            Chat with developers and
+            collaborate in realtime.
           </p>
         </div>
 
@@ -97,7 +91,7 @@ export default function Messages() {
       </header>
 
       <section className="overflow-hidden rounded-2xl border border-border bg-background">
-        <div className="min-h-150 lg:grid lg:grid-cols-[340px_1fr]">
+        <div className="lg:grid lg:grid-cols-[340px_1fr]">
           <aside
             className={`
               border-border
@@ -124,7 +118,7 @@ export default function Messages() {
               </p>
             </div>
 
-            <div className="max-h-150 overflow-y-auto">
+            <div className="h-162.5 overflow-y-auto">
               <ConversationList
                 conversations={
                   conversations
@@ -143,36 +137,38 @@ export default function Messages() {
           </aside>
 
           <div
-            className={`
-              ${
-                conversationId
-                  ? "block"
-                  : "hidden lg:block"
-              }
-            `}
+            className={
+              conversationId
+                ? "block"
+                : "hidden lg:block"
+            }
           >
             {!conversationId ? (
               <ConversationEmptyState />
             ) : loading ? (
-              <div className="flex min-h-150 items-center justify-center">
+              <div className="flex h-162.5 items-center justify-center">
                 <p className="text-sm text-muted">
                   Opening conversation...
                 </p>
               </div>
             ) : conversationMissing ? (
-              <div className="flex min-h-150 flex-col items-center justify-center px-6 text-center">
+              <div className="flex h-162.5 flex-col items-center justify-center px-6 text-center">
                 <h2 className="font-semibold text-heading">
                   Conversation unavailable
                 </h2>
 
-                <p className="mt-2 text-sm text-muted">
+                <p className="mt-2 max-w-sm text-sm leading-6 text-muted">
                   This conversation does
                   not exist or you don't
-                  have access to it.
+                  have permission to
+                  access it.
                 </p>
               </div>
-            ) : hasActiveConversation ? (
-              <ConversationPreview
+            ) : activeConversation ? (
+              <ChatRoom
+                key={
+                  activeConversation._id
+                }
                 conversation={
                   activeConversation
                 }
