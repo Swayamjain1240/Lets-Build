@@ -16,6 +16,7 @@ import {
 export default function ChatHeader({
   conversation,
   currentUserId,
+  connected = false,
 }) {
   const otherUser =
     getOtherParticipant(
@@ -57,11 +58,27 @@ export default function ChatHeader({
               "Developer"}
           </h2>
 
-          <p className="truncate text-xs text-muted">
-            {project?.title ||
-              otherUser?.experience ||
-              "Direct conversation"}
-          </p>
+          <div className="mt-0.5 flex items-center gap-2">
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                connected
+                  ? "bg-emerald-400"
+                  : "bg-amber-400"
+              }`}
+            />
+
+            <p className="truncate text-xs text-muted">
+              {connected
+                ? "Realtime connected"
+                : "Reconnecting..."}
+            </p>
+          </div>
+
+          {project?.title && (
+            <p className="mt-0.5 truncate text-[11px] text-muted">
+              {project.title}
+            </p>
+          )}
         </div>
       </div>
 

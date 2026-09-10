@@ -16,6 +16,7 @@ import ConversationEmptyState from "../../components/chat/ConversationEmptyState
 import ChatRoom from "../../components/chat/ChatRoom.jsx";
 
 import useConversations from "../../hooks/useConversations.js";
+import useConversationSocket from "../../hooks/useConversationSocket.js";
 import useAuth from "../../hooks/useAuth.js";
 
 export default function Messages() {
@@ -31,7 +32,17 @@ export default function Messages() {
     loading,
     error,
     refresh,
+    upsertConversation,
+    applyMessageToConversation,
   } = useConversations();
+
+  useConversationSocket({
+    onConversationUpdate:
+      upsertConversation,
+
+    onMessage:
+      applyMessageToConversation,
+  });
 
   const activeConversation =
     useMemo(
@@ -74,8 +85,8 @@ export default function Messages() {
           </h1>
 
           <p className="mt-2 text-sm text-muted">
-            Chat with developers and
-            collaborate in realtime.
+            Chat and collaborate with
+            developers in realtime.
           </p>
         </div>
 

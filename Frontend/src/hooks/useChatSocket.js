@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useState,
 } from "react";
 
 import {
@@ -34,13 +35,19 @@ export default function useChatSocket({
   conversationId,
   onMessage,
 }) {
+  const [connected, setConnected] =
+    useState(false);
+
   useEffect(() => {
     if (!conversationId) {
+      setConnected(false);
       return;
     }
 
     const token =
-      localStorage.getItem("token");
+      localStorage.getItem(
+        "token"
+      );
 
     let socket =
       getSocket();
@@ -51,14 +58,36 @@ export default function useChatSocket({
     }
 
     if (!socket) {
+      setConnected(false);
       return;
     }
+
+    const joinRoom = () => {
+      socket.emit(
+        JOIN_EVENT,
+        {
+          conversationId,
+        }
+      );
+    };
+
+    const handleConnect = () => {
+      setConnected(true);
+
+      joinRoom();
+    };
+
+    const handleDisconnect = () => {
+      setConnected(false);
+    };
 
     const handleNewMessage = (
       payload
     ) => {
       const message =
-        extractMessage(payload);
+        extractMessage(
+          payload
+        );
 
       if (!message?._id) {
         return;
@@ -82,11 +111,14 @@ export default function useChatSocket({
       onMessage?.(message);
     };
 
-    socket.emit(
-      JOIN_EVENT,
-      {
-        conversationId,
-      }
+    socket.on(
+      "connect",
+      handleConnect
+    );
+
+    socket.on(
+      "disconnect",
+      handleDisconnect
     );
 
     socket.on(
@@ -94,21 +126,42 @@ export default function useChatSocket({
       handleNewMessage
     );
 
+    if (socket.connected) {
+      setConnected(true);
+      joinRoom();
+    }
+
     return () => {
+      socket.off(
+        "connect",
+        handleConnect
+      );
+
+      socket.off(
+        "disconnect",
+        handleDisconnect
+      );
+
       socket.off(
         MESSAGE_EVENT,
         handleNewMessage
       );
 
-      socket.emit(
-        LEAVE_EVENT,
-        {
-          conversationId,
-        }
-      );
+      if (socket.connected) {
+        socket.emit(
+          LEAVE_EVENT,
+          {
+            conversationId,
+          }
+        );
+      }
     };
   }, [
     conversationId,
     onMessage,
   ]);
+
+  return {
+    connected,
+  };
 }

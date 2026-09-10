@@ -33,10 +33,12 @@ const extractNotifications = (
 
   if (
     Array.isArray(
-      response?.data?.notifications
+      response?.data
+        ?.notifications
     )
   ) {
-    return response.data.notifications;
+    return response.data
+      .notifications;
   }
 
   return [];
@@ -47,19 +49,26 @@ export default function NotificationProvider({
 }) {
   const { user } = useAuth();
 
+  const userId =
+    user?._id || "";
+
   const [
     notifications,
     setNotifications,
   ] = useState([]);
 
   const [loading, setLoading] =
-    useState(true);
+    useState(false);
 
   const [error, setError] =
     useState("");
 
   const refresh =
     useCallback(async () => {
+      if (!userId) {
+        return;
+      }
+
       setLoading(true);
       setError("");
 
@@ -74,64 +83,74 @@ export default function NotificationProvider({
         );
       } catch (err) {
         setError(
-          err.response?.data?.message ||
+          err.response?.data
+            ?.message ||
             "Unable to load notifications."
         );
       } finally {
         setLoading(false);
       }
-    }, []);
+    }, [userId]);
 
   useEffect(() => {
-    if (!user) {
+    if (!userId) {
       setNotifications([]);
       setLoading(false);
       return;
     }
 
     refresh();
-  }, [user, refresh]);
+  }, [userId, refresh]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!userId) {
+      return;
+    }
 
     const token =
-      localStorage.getItem("token");
+      localStorage.getItem(
+        "token"
+      );
 
-    if (!token) return;
+    if (!token) {
+      return;
+    }
 
     const socket =
       connectSocket(token);
 
-    if (!socket) return;
+    if (!socket) {
+      return;
+    }
 
-    const handleNotification = (
-      notification
-    ) => {
-      if (!notification?._id) {
-        return;
-      }
-
-      setNotifications(
-        (previous) => {
-          const exists =
-            previous.some(
-              (item) =>
-                item._id ===
-                notification._id
-            );
-
-          if (exists) {
-            return previous;
-          }
-
-          return [
-            notification,
-            ...previous,
-          ];
+    const handleNotification =
+      (notification) => {
+        if (
+          !notification?._id
+        ) {
+          return;
         }
-      );
-    };
+
+        setNotifications(
+          (previous) => {
+            const exists =
+              previous.some(
+                (item) =>
+                  item._id ===
+                  notification._id
+              );
+
+            if (exists) {
+              return previous;
+            }
+
+            return [
+              notification,
+              ...previous,
+            ];
+          }
+        );
+      };
 
     socket.on(
       "notification",
@@ -146,7 +165,7 @@ export default function NotificationProvider({
 
       disconnectSocket();
     };
-  }, [user]);
+  }, [userId]);
 
   const unreadCount =
     useMemo(
@@ -160,8 +179,6 @@ export default function NotificationProvider({
 
   const markAsRead =
     async (notificationId) => {
-      if (!notificationId) return;
-
       await markNotificationAsRead(
         notificationId
       );
