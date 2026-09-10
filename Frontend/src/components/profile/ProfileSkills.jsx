@@ -1,6 +1,6 @@
 import { Code2 } from "lucide-react";
 
-import SkillBadge from "./SkillBadge.jsx";
+import SkillBadge from "../user/SkillBadge.jsx";
 
 export default function ProfileSkills({
   skills = [],
