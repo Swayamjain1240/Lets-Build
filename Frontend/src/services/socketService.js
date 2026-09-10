@@ -5,13 +5,21 @@ const SOCKET_URL =
   "http://localhost:5000";
 
 let socket = null;
+let activeToken = null;
 
 export const connectSocket = (token) => {
   if (!token) {
     return null;
   }
 
-  if (socket?.connected) {
+  if (
+    socket &&
+    activeToken === token
+  ) {
+    if (!socket.connected) {
+      socket.connect();
+    }
+
     return socket;
   }
 
@@ -19,7 +27,11 @@ export const connectSocket = (token) => {
     socket.disconnect();
   }
 
+  activeToken = token;
+
   socket = io(SOCKET_URL, {
+    autoConnect: true,
+
     auth: {
       token,
     },
@@ -42,6 +54,9 @@ export const disconnectSocket = () => {
     return;
   }
 
+  socket.removeAllListeners();
   socket.disconnect();
+
   socket = null;
+  activeToken = null;
 };
