@@ -56,7 +56,7 @@ export default function RecruitmentCard({
         </div>
       )}
 
-      <p className="mt-5 line-clamp-3 min-h-[72px] text-sm leading-6 text-muted">
+      <p className="mt-5 line-clamp-3 min-h-18 text-sm leading-6 text-muted">
         {publicSummary ||
           "No public summary available."}
       </p>
