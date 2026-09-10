@@ -23,6 +23,8 @@ import EditProject from "../pages/projects/EditProject.jsx";
 
 import Recruitments from "../pages/recruitments/Recruitments.jsx";
 import CreateRecruitment from "../pages/recruitments/CreateRecruitment.jsx";
+import RecruitmentDetails from "../pages/recruitments/RecruitmentDetails.jsx";
+import EditRecruitment from "../pages/recruitments/EditRecruitment.jsx";
 
 import ProtectedRoute from "./ProtectRoute.jsx";
 import OnboardingRoute from "./OnboardingRoute.jsx";
@@ -114,16 +116,12 @@ export default function AppRoutes() {
 
           <Route
             path="/recruitments/:id"
-            element={
-              <ComingSoon title="Recruitment Details" />
-            }
+            element={<RecruitmentDetails />}
           />
 
           <Route
             path="/recruitments/:id/edit"
-            element={
-              <ComingSoon title="Edit Recruitment" />
-            }
+            element={<EditRecruitment />}
           />
 
           <Route
