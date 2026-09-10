@@ -1,52 +1,44 @@
-import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import {
+  useState,
+} from "react";
 
-import AppNavbar from "../components/layout/AppNavbar.jsx";
+import {
+  Outlet,
+} from "react-router-dom";
+
 import AppSidebar from "../components/layout/AppSidebar.jsx";
+import AppNavbar from "../components/layout/AppNavbar.jsx";
+
+import NotificationProvider from "../context/NotificationContext.jsx";
 
 export default function MainLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { pathname } = useLocation();
-
-  // Close mobile navigation after changing pages.
-  useEffect(() => {
-    setSidebarOpen(false);
-  }, [pathname]);
-
-  // Allow Escape to close the mobile sidebar.
-  useEffect(() => {
-    if (!sidebarOpen) return;
-
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        setSidebarOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [sidebarOpen]);
+  const [
+    sidebarOpen,
+    setSidebarOpen,
+  ] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background text-body lg:flex">
-      <AppSidebar
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
-
-      <div className="min-w-0 flex-1">
-        <AppNavbar
-          sidebarOpen={sidebarOpen}
-          onMenuClick={() => setSidebarOpen(true)}
+    <NotificationProvider>
+      <div className="min-h-screen bg-background">
+        <AppSidebar
+          open={sidebarOpen}
+          onClose={() =>
+            setSidebarOpen(false)
+          }
         />
 
-        <main className="mx-auto w-full max-w-7xl px-5 py-8 lg:px-8">
-          <Outlet />
-        </main>
+        <div className="lg:pl-64">
+          <AppNavbar
+            onMenuClick={() =>
+              setSidebarOpen(true)
+            }
+          />
+
+          <main className="px-4 py-6 sm:px-6 lg:px-8">
+            <Outlet />
+          </main>
+        </div>
       </div>
-    </div>
+    </NotificationProvider>
   );
 }

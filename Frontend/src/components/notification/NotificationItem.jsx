@@ -1,46 +1,58 @@
 import {
   Bell,
   CheckCircle2,
+  ExternalLink,
   UserPlus,
   XCircle,
 } from "lucide-react";
 
+import {
+  useNavigate,
+} from "react-router-dom";
+
 import Avatar from "../user/Avatar.jsx";
 
-const getNotificationMeta = (
-  type
-) => {
-  switch (type) {
+const getMeta = (type) => {
+  const value =
+    String(type || "")
+      .toUpperCase();
+
+  switch (value) {
     case "JOIN_REQUEST":
       return {
         Icon: UserPlus,
-        text: "requested to join your project",
+        text:
+          "requested to join your project",
       };
 
     case "INVITATION":
       return {
         Icon: UserPlus,
-        text: "invited you to a project",
+        text:
+          "invited you to a project",
       };
 
     case "REQUEST_ACCEPTED":
     case "INVITATION_ACCEPTED":
       return {
         Icon: CheckCircle2,
-        text: "accepted your request",
+        text:
+          "accepted your request",
       };
 
     case "REQUEST_REJECTED":
     case "INVITATION_REJECTED":
       return {
         Icon: XCircle,
-        text: "rejected your request",
+        text:
+          "rejected your request",
       };
 
     default:
       return {
         Icon: Bell,
-        text: "sent you a notification",
+        text:
+          "sent you a notification",
       };
   }
 };
@@ -48,20 +60,24 @@ const getNotificationMeta = (
 const formatDate = (value) => {
   if (!value) return "";
 
-  const date = new Date(value);
+  const date =
+    new Date(value);
 
   if (
-    Number.isNaN(date.getTime())
+    Number.isNaN(
+      date.getTime()
+    )
   ) {
     return "";
   }
 
-  return date.toLocaleDateString(
+  return date.toLocaleString(
     "en-IN",
     {
       day: "numeric",
       month: "short",
-      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
     }
   );
 };
@@ -70,12 +86,18 @@ export default function NotificationItem({
   notification,
   onRead,
 }) {
+  const navigate =
+    useNavigate();
+
   if (!notification) {
     return null;
   }
 
   const sender =
-    notification.sender;
+    typeof notification.sender ===
+    "object"
+      ? notification.sender
+      : null;
 
   const project =
     typeof notification.project ===
@@ -84,20 +106,38 @@ export default function NotificationItem({
       : null;
 
   const { Icon, text } =
-    getNotificationMeta(
-      notification.type
-    );
+    getMeta(notification.type);
+
+  const handleOpen =
+    async () => {
+      try {
+        if (
+          !notification.isRead
+        ) {
+          await onRead?.(
+            notification._id
+          );
+        }
+      } catch {
+        // Opening should still work
+      }
+
+      if (notification.request) {
+        navigate("/requests");
+        return;
+      }
+
+      if (project?._id) {
+        navigate(
+          `/projects/${project._id}`
+        );
+      }
+    };
 
   return (
-    <button
-      type="button"
-      onClick={() =>
-        !notification.isRead &&
-        onRead?.(notification._id)
-      }
+    <article
       className={`
-        flex w-full gap-4 rounded-xl
-        border p-4 text-left
+        rounded-xl border p-4
         transition-colors
         ${
           notification.isRead
@@ -106,52 +146,65 @@ export default function NotificationItem({
         }
       `}
     >
-      <Avatar
-        src={
-          sender?.profilePicture
-        }
-        name={
-          sender?.name ||
-          "Developer"
-        }
-        size="sm"
-      />
+      <div className="flex gap-4">
+        <Avatar
+          src={
+            sender?.profilePicture
+          }
+          name={
+            sender?.name ||
+            "Developer"
+          }
+          size="sm"
+        />
 
-      <div className="min-w-0 flex-1">
-        <div className="flex gap-2">
-          <Icon
-            size={16}
-            className="mt-0.5 shrink-0 text-brand-400"
-          />
+        <div className="min-w-0 flex-1">
+          <div className="flex gap-2">
+            <Icon
+              size={16}
+              className="mt-1 shrink-0 text-brand-400"
+            />
 
-          <p className="text-sm leading-6 text-muted">
-            <span className="font-medium text-heading">
-              {sender?.name ||
-                "Someone"}
-            </span>{" "}
-            {text}
+            <p className="text-sm leading-6 text-muted">
+              <span className="font-medium text-heading">
+                {sender?.name ||
+                  "Someone"}
+              </span>{" "}
+              {text}
+            </p>
+          </div>
+
+          {project?.title && (
+            <p className="mt-1 truncate text-xs text-muted">
+              {project.title}
+            </p>
+          )}
+
+          <p className="mt-2 text-xs text-muted">
+            {formatDate(
+              notification.createdAt
+            )}
           </p>
         </div>
 
-        {project?.title && (
-          <p className="mt-1 truncate text-xs text-muted">
-            {project.title}
-          </p>
+        {!notification.isRead && (
+          <span
+            aria-label="Unread"
+            className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-500"
+          />
         )}
-
-        <p className="mt-2 text-xs text-muted">
-          {formatDate(
-            notification.createdAt
-          )}
-        </p>
       </div>
 
-      {!notification.isRead && (
-        <span
-          aria-label="Unread"
-          className="mt-2 h-2 w-2 shrink-0 rounded-full bg-brand-500"
-        />
-      )}
-    </button>
+      <div className="mt-3 flex justify-end border-t border-border-soft pt-3">
+        <button
+          type="button"
+          onClick={handleOpen}
+          className="inline-flex items-center gap-2 text-xs font-medium text-heading"
+        >
+          View
+          <ExternalLink size={13} />
+        </button>
+      </div>
+    </article>
   );
 }

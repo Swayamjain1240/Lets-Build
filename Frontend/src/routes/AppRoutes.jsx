@@ -28,7 +28,8 @@ import EditRecruitment from "../pages/recruitments/EditRecruitment.jsx";
 
 import Recommendations from "../pages/recommendations/Recommendations.jsx";
 
-import Requests from "../pages/requests/Requests.jsx";
+import Requests from "../pages/request/Requests.jsx";
+import Notifications from "../pages/notifications/Notifications.jsx";
 
 import ProtectedRoute from "./ProtectRoute.jsx";
 import OnboardingRoute from "./OnboardingRoute.jsx";
@@ -145,7 +146,7 @@ export default function AppRoutes() {
 
           <Route
             path="/notifications"
-            element={<ComingSoon title="Notifications" />}
+            element={<Notifications />}
           />
         </Route>
       </Route>
