@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useRef,
   useState,
 } from "react";
 
@@ -9,6 +10,7 @@ import MessageInput from "./MessageInput.jsx";
 
 import useMessages from "../../hooks/useMessages.js";
 import useChatSocket from "../../hooks/useChatSocket.js";
+import useChatScroll from "../../hooks/useChatScroll.js";
 
 import {
   sendMessage,
@@ -31,6 +33,9 @@ export default function ChatRoom({
   const conversationId =
     conversation?._id;
 
+  const scrollContainerRef =
+    useRef(null);
+
   const {
     messages,
     loading,
@@ -44,8 +49,10 @@ export default function ChatRoom({
   const [sending, setSending] =
     useState(false);
 
-  const [sendError, setSendError] =
-    useState("");
+  const [
+    sendError,
+    setSendError,
+  ] = useState("");
 
   const handleSocketMessage =
     useCallback(
@@ -55,10 +62,21 @@ export default function ChatRoom({
       [appendMessage]
     );
 
-  useChatSocket({
-    conversationId,
-    onMessage:
-      handleSocketMessage,
+  const { connected } =
+    useChatSocket({
+      conversationId,
+
+      onMessage:
+        handleSocketMessage,
+    });
+
+  useChatScroll({
+    containerRef:
+      scrollContainerRef,
+
+    messages,
+
+    currentUserId,
   });
 
   const handleSend =
@@ -108,7 +126,8 @@ export default function ChatRoom({
         );
 
         setSendError(
-          err.response?.data?.message ||
+          err.response?.data
+            ?.message ||
             err.message ||
             "Unable to send message."
         );
@@ -128,9 +147,13 @@ export default function ChatRoom({
         currentUserId={
           currentUserId
         }
+        connected={connected}
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div
+        ref={scrollContainerRef}
+        className="min-h-0 flex-1 overflow-y-auto"
+      >
         <MessageList
           messages={messages}
           loading={loading}

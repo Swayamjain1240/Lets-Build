@@ -9,6 +9,10 @@ import {
   getConversations,
 } from "../services/communicationService.js";
 
+import {
+  getEntityId,
+} from "../utils/chatUtils.js";
+
 const extractConversations = (
   response
 ) => {
@@ -20,25 +24,41 @@ const extractConversations = (
 
   if (
     Array.isArray(
-      response?.data?.conversations
+      response?.data
+        ?.conversations
     )
   ) {
-    return response.data.conversations;
+    return response.data
+      .conversations;
   }
 
   return [];
 };
 
+const getActivityTime = (
+  conversation
+) => {
+  return (
+    conversation
+      ?.lastMessage
+      ?.createdAt ||
+    conversation?.updatedAt ||
+    conversation?.createdAt
+  );
+};
+
 const sortConversations = (
   conversations
 ) => {
-  return [...conversations].sort(
+  return [
+    ...conversations,
+  ].sort(
     (a, b) =>
       (new Date(
-        b.updatedAt
+        getActivityTime(b)
       ).getTime() || 0) -
       (new Date(
-        a.updatedAt
+        getActivityTime(a)
       ).getTime() || 0)
   );
 };
@@ -84,13 +104,12 @@ export default function useConversations() {
           return;
         }
 
-        const data =
-          extractConversations(
-            response
-          );
-
         setConversations(
-          sortConversations(data)
+          sortConversations(
+            extractConversations(
+              response
+            )
+          )
         );
       } catch (err) {
         if (
@@ -105,7 +124,8 @@ export default function useConversations() {
         );
 
         setError(
-          err.response?.data?.message ||
+          err.response?.data
+            ?.message ||
             "Unable to load conversations."
         );
 
@@ -128,27 +148,106 @@ export default function useConversations() {
   }, [refresh]);
 
   const upsertConversation =
-    useCallback((conversation) => {
-      if (!conversation?._id) {
-        return;
-      }
-
-      setConversations(
-        (previous) => {
-          const withoutCurrent =
-            previous.filter(
-              (item) =>
-                item._id !==
-                conversation._id
-            );
-
-          return sortConversations([
-            conversation,
-            ...withoutCurrent,
-          ]);
+    useCallback(
+      (conversation) => {
+        if (
+          !conversation?._id
+        ) {
+          return;
         }
-      );
-    }, []);
+
+        setConversations(
+          (previous) => {
+            const existing =
+              previous.find(
+                (item) =>
+                  item._id ===
+                  conversation._id
+              );
+
+            const merged =
+              existing
+                ? {
+                    ...existing,
+                    ...conversation,
+
+                    participants:
+                      conversation
+                        .participants ||
+                      existing
+                        .participants,
+
+                    project:
+                      conversation
+                        .project ??
+                      existing.project,
+
+                    lastMessage:
+                      conversation
+                        .lastMessage ??
+                      existing
+                        .lastMessage,
+                  }
+                : conversation;
+
+            const remaining =
+              previous.filter(
+                (item) =>
+                  item._id !==
+                  conversation._id
+              );
+
+            return sortConversations([
+              merged,
+              ...remaining,
+            ]);
+          }
+        );
+      },
+      []
+    );
+
+  const applyMessageToConversation =
+    useCallback(
+      (message) => {
+        if (!message?._id) {
+          return;
+        }
+
+        const conversationId =
+          getEntityId(
+            message.conversation
+          );
+
+        if (!conversationId) {
+          return;
+        }
+
+        setConversations(
+          (previous) =>
+            sortConversations(
+              previous.map(
+                (conversation) =>
+                  conversation._id ===
+                  conversationId
+                    ? {
+                        ...conversation,
+
+                        lastMessage:
+                          message,
+
+                        updatedAt:
+                          message.createdAt ||
+                          new Date()
+                            .toISOString(),
+                      }
+                    : conversation
+              )
+            )
+        );
+      },
+      []
+    );
 
   return {
     conversations,
@@ -156,5 +255,6 @@ export default function useConversations() {
     error,
     refresh,
     upsertConversation,
+    applyMessageToConversation,
   };
 }
