@@ -20,12 +20,24 @@ const getPerson = (
     : request.sender;
 };
 
-const getTypeLabel = (type) => {
-  if (type === "JOIN_REQUEST") {
+const getTypeLabel = (
+  type
+) => {
+  const normalized =
+    String(type || "")
+      .toUpperCase();
+
+  if (
+    normalized ===
+    "JOIN_REQUEST"
+  ) {
     return "Join Request";
   }
 
-  if (type === "INVITATION") {
+  if (
+    normalized ===
+    "INVITATION"
+  ) {
     return "Project Invitation";
   }
 

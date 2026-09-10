@@ -7,7 +7,7 @@ import {
 
 import { Link } from "react-router-dom";
 
-import Avatar from "./Avatar.jsx";
+import Avatar from "../user/Avatar.jsx";
 
 export default function ProfileHeader({
     profile,

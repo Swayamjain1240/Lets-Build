@@ -1,4 +1,4 @@
-import Avatar from "./Avatar.jsx";
+import Avatar from "../user/Avatar.jsx";
 
 const fieldClass = `
   w-full rounded-xl
