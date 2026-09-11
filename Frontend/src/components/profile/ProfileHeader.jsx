@@ -1,12 +1,6 @@
-import {
-    ExternalLink,
-    Github,
-    Linkedin,
-    Pencil,
-} from "lucide-react";
-
+import { ExternalLink, Pencil } from "lucide-react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
 import Avatar from "../user/Avatar.jsx";
 
 export default function ProfileHeader({
@@ -55,12 +49,12 @@ export default function ProfileHeader({
                             <Link
                                 to="/profile/edit"
                                 className="
-                  inline-flex items-center justify-center gap-2
-                  rounded-xl border border-border
-                  px-4 py-2.5 text-sm font-medium text-heading
-                  transition-colors
-                  hover:bg-background
-                "
+                                    inline-flex items-center justify-center gap-2
+                                    rounded-xl border border-border
+                                    px-4 py-2.5 text-sm font-medium text-heading
+                                    transition-colors
+                                    hover:bg-background
+                                "
                             >
                                 <Pencil size={16} />
                                 Edit profile
@@ -72,7 +66,7 @@ export default function ProfileHeader({
                         {githubUrl && (
                             <ExternalProfileLink
                                 href={githubUrl}
-                                icon={Github}
+                                icon={FaGithub}
                                 label="GitHub"
                             />
                         )}
@@ -80,7 +74,7 @@ export default function ProfileHeader({
                         {linkedinUrl && (
                             <ExternalProfileLink
                                 href={linkedinUrl}
-                                icon={Linkedin}
+                                icon={FaLinkedin}
                                 label="LinkedIn"
                             />
                         )}
@@ -102,13 +96,13 @@ function ExternalProfileLink({
             target="_blank"
             rel="noreferrer"
             className="
-        inline-flex items-center gap-2
-        rounded-lg border border-border
-        px-3 py-2 text-sm text-muted
-        transition-colors
-        hover:border-brand-500/30
-        hover:text-heading
-      "
+                inline-flex items-center gap-2
+                rounded-lg border border-border
+                px-3 py-2 text-sm text-muted
+                transition-colors
+                hover:border-brand-500/30
+                hover:text-heading
+            "
         >
             <Icon size={16} />
 
