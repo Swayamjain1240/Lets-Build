@@ -77,3 +77,48 @@ export const updateProject = async (req, res, next) => {
     next(error);
   }
 };
+
+export const removeProjectMember = async (
+    req,
+    res,
+    next
+) => {
+    try {
+        const project =
+            await projectService.removeProjectMember(
+                req.params.id,
+                req.params.memberId,
+                req.user._id
+            );
+
+        res.status(200).json({
+            success: true,
+            message:
+                "Team member removed successfully",
+            data: project,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteProject = async (
+    req,
+    res,
+    next
+) => {
+    try {
+        await projectService.deleteProject(
+            req.params.id,
+            req.user._id
+        );
+
+        res.status(200).json({
+            success: true,
+            message:
+                "Project deleted successfully",
+        });
+    } catch (error) {
+        next(error);
+    }
+};

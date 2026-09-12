@@ -196,3 +196,157 @@ export const updateProject = async (projectId, userId, updateData) => {
     .populate('owner', 'name email profilePicture')
     .populate('requiredSkills', 'name displayName');
 };
+
+export const removeProjectMember = async (
+    projectId,
+    memberId,
+    userId
+) => {
+    if (
+        !mongoose.isValidObjectId(
+            projectId
+        ) ||
+        !mongoose.isValidObjectId(
+            memberId
+        )
+    ) {
+        const error = new Error(
+            "Invalid project or member ID"
+        );
+
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const project =
+        await Project.findById(
+            projectId
+        );
+
+    if (!project) {
+        const error = new Error(
+            "Project not found"
+        );
+
+        error.statusCode = 404;
+        throw error;
+    }
+
+    // Only project owner can remove members
+    if (
+        project.owner.toString() !==
+        userId.toString()
+    ) {
+        const error = new Error(
+            "Only the project owner can remove team members"
+        );
+
+        error.statusCode = 403;
+        throw error;
+    }
+
+    // Owner cannot remove himself
+    if (
+        project.owner.toString() ===
+        memberId.toString()
+    ) {
+        const error = new Error(
+            "Project owner cannot be removed"
+        );
+
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const memberExists =
+        project.teamMembers.some(
+            (member) =>
+                member.user.toString() ===
+                memberId.toString()
+        );
+
+    if (!memberExists) {
+        const error = new Error(
+            "Team member not found"
+        );
+
+        error.statusCode = 404;
+        throw error;
+    }
+
+    project.teamMembers =
+        project.teamMembers.filter(
+            (member) =>
+                member.user.toString() !==
+                memberId.toString()
+        );
+
+    await project.save();
+
+    return await Project.findById(
+        projectId
+    )
+        .populate(
+            "owner",
+            "name email profilePicture"
+        )
+        .populate(
+            "requiredSkills",
+            "name displayName"
+        )
+        .populate(
+            "teamMembers.user",
+            "name email profilePicture experience skills"
+        );
+};
+
+export const deleteProject = async (
+    projectId,
+    userId
+) => {
+    if (
+        !mongoose.isValidObjectId(
+            projectId
+        )
+    ) {
+        const error = new Error(
+            "Invalid project ID"
+        );
+
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const project =
+        await Project.findById(
+            projectId
+        );
+
+    if (!project) {
+        const error = new Error(
+            "Project not found"
+        );
+
+        error.statusCode = 404;
+        throw error;
+    }
+
+    // Only owner can delete project
+    if (
+        project.owner.toString() !==
+        userId.toString()
+    ) {
+        const error = new Error(
+            "Only the project owner can delete this project"
+        );
+
+        error.statusCode = 403;
+        throw error;
+    }
+
+    await Project.findByIdAndDelete(
+        projectId
+    );
+
+    return true;
+};
