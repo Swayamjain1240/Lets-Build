@@ -1,16 +1,13 @@
 import { io } from "socket.io-client";
 
 const SOCKET_URL =
-    import.meta.env
-        .VITE_SOCKET_URL ||
-    "http://localhost:5000";
+    import.meta.env.VITE_SOCKET_URL ||
+    "https://lets-build-mb7f.onrender.com";
 
 let socket = null;
 let activeToken = null;
 
-export const connectSocket = (
-    token
-) => {
+export const connectSocket = (token) => {
     if (!token) {
         return null;
     }
@@ -62,15 +59,14 @@ export const connectSocket = (
 export const getSocket = () =>
     socket;
 
-export const disconnectSocket =
-    () => {
-        if (!socket) {
-            return;
-        }
+export const disconnectSocket = () => {
+    if (!socket) {
+        return;
+    }
 
-        socket.removeAllListeners();
-        socket.disconnect();
+    socket.removeAllListeners();
+    socket.disconnect();
 
-        socket = null;
-        activeToken = null;
-    };
+    socket = null;
+    activeToken = null;
+};

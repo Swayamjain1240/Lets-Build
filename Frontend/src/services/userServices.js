@@ -1,34 +1,29 @@
-import api from "./api.js";
+import axios from "axios";
 
-export const getMyProfile = async () => {
-  const response = await api.get("/user/profile");
-  return response.data;
-};
+const API_URL =
+    import.meta.env.VITE_API_URL ||
+    "https://lets-build-mb7f.onrender.com/api";
 
-export const completeOnboarding = async (formData) => {
-  const response = await api.post(
-    "/user/onboarding",
-    formData
-  );
+const api = axios.create({
+    baseURL: API_URL,
+    withCredentials: true,
+});
 
-  return response.data;
-};
+api.interceptors.request.use(
+    (config) => {
+        const token =
+            localStorage.getItem("token");
 
-export const updateMyProfile = async (formData) => {
-  const response = await api.put(
-    "/user/profile",
-    formData
-  );
+        if (token) {
+            config.headers.Authorization =
+                `Bearer ${token}`;
+        }
 
-  return response.data;
-};
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
-export const getDevelopers = async () => {
-  const response = await api.get("/user/developers");
-  return response.data;
-}
-
-export const getDeveloperById = async (developerId) => {
-  const response = await api.get(`/user/${developerId}`);
-  return response.data;
-}
+export default api;
