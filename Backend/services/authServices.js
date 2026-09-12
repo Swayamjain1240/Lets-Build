@@ -1,164 +1,102 @@
-import * as authService from "../services/authServices.js";
+import User from "../model/userModel.js";
+import generateToken from "../utils/generateToken.js";
 
-const setAuthCookie = (res, token) => {
-    const isProduction =
-        process.env.NODE_ENV === "production";
+export const registerUser = async ({
+    name,
+    email,
+    password,
+}) => {
+    const normalizedEmail =
+        email.trim().toLowerCase();
 
-    res.cookie("jwt", token, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction
-            ? "none"
-            : "lax",
-        maxAge:
-            7 * 24 * 60 * 60 * 1000,
+    const existingUser =
+        await User.findOne({
+            email: normalizedEmail,
+        });
+
+    if (existingUser) {
+        const error = new Error(
+            "User with this email already exists"
+        );
+
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const user = await User.create({
+        name: name.trim(),
+        email: normalizedEmail,
+        password,
     });
-};
 
-export const signup = async (
-    req,
-    res,
-    next
-) => {
-    try {
-        const {
-            name,
-            email,
-            password,
-        } = req.body;
+    const token = generateToken(
+        user._id
+    );
 
-        if (
-            !name ||
-            !email ||
-            !password
-        ) {
-            const error = new Error(
-                "Please provide all required fields"
-            );
-
-            error.statusCode = 400;
-            throw error;
-        }
-
-        const data =
-            await authService.registerUser({
-                name,
-                email,
-                password,
-            });
-
-        if (!data?.token) {
-            throw new Error(
-                "Authentication token was not generated"
-            );
-        }
-
-        setAuthCookie(
-            res,
-            data.token
+    const safeUser =
+        await User.findById(
+            user._id
+        ).populate(
+            "skills",
+            "name displayName"
         );
 
-        res.status(201).json({
-            success: true,
-            message:
-                "User registered successfully",
-            data: data.user,
-        });
-    } catch (error) {
-        next(error);
-    }
+    return {
+        user: safeUser,
+        token,
+    };
 };
 
-export const login = async (
-    req,
-    res,
-    next
-) => {
-    try {
-        const {
-            email,
-            password,
-        } = req.body;
 
-        if (
-            !email ||
-            !password
-        ) {
-            const error = new Error(
-                "Please provide email and password"
-            );
+export const authenticateUser = async ({
+    email,
+    password,
+}) => {
+    const normalizedEmail =
+        email.trim().toLowerCase();
 
-            error.statusCode = 400;
-            throw error;
-        }
+    const user =
+        await User.findOne({
+            email: normalizedEmail,
+        }).select("+password");
 
-        const data =
-            await authService.authenticateUser({
-                email,
-                password,
-            });
-
-        if (!data?.token) {
-            throw new Error(
-                "Authentication token was not generated"
-            );
-        }
-
-        setAuthCookie(
-            res,
-            data.token
+    if (!user) {
+        const error = new Error(
+            "Invalid email or password"
         );
 
-        res.status(200).json({
-            success: true,
-            message:
-                "Logged in successfully",
-            data: data.user,
-        });
-    } catch (error) {
-        next(error);
+        error.statusCode = 401;
+        throw error;
     }
-};
 
-export const getMe = async (
-    req,
-    res,
-    next
-) => {
-    try {
-        res.status(200).json({
-            success: true,
-            data: req.user,
-        });
-    } catch (error) {
-        next(error);
+    const passwordMatches =
+        await user.matchPassword(
+            password
+        );
+
+    if (!passwordMatches) {
+        const error = new Error(
+            "Invalid email or password"
+        );
+
+        error.statusCode = 401;
+        throw error;
     }
-};
 
-export const logout = async (
-    req,
-    res,
-    next
-) => {
-    try {
-        const isProduction =
-            process.env.NODE_ENV ===
-            "production";
+    const token = generateToken(
+        user._id
+    );
 
-        res.clearCookie("jwt", {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction
-                ? "none"
-                : "lax",
-        });
+    const safeUser =
+        await User.findById(
+            user._id
+        ).populate(
+            "skills",
+            "name displayName"
+        );
 
-        res.status(200).json({
-            success: true,
-            message:
-                "Logged out successfully",
-        });
-    } catch (error) {
-        next(error);
-    }
+    return {
+        user: safeUser,
+        token,
+    };
 };
