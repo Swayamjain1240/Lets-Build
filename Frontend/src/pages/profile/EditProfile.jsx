@@ -8,8 +8,8 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import ProfileDetailSkeleton from "../../components/user/ProfileDetailSkeleton.jsx";
-import ProfileFormFields from "../../components/user/ProfileFormFields.jsx";
+import ProfileDetailSkeleton from "../../components/profile/ProfileDetailSkeleton.jsx";
+import ProfileFormFields from "../../components/profile/ProfileFormFields.jsx";
 
 import useProfileForm from "../../hooks/useProfileForm.js";
 import useAuth from "../../hooks/useAuth.js";

@@ -24,10 +24,10 @@ import CreateProject from "../pages/projects/CreateProject.jsx";
 import ProjectDetails from "../pages/projects/ProjectDetails.jsx";
 import EditProject from "../pages/projects/EditProject.jsx";
 
-import Recruitments from "../pages/recruitments/Recruitments.jsx";
-import CreateRecruitment from "../pages/recruitments/CreateRecruitment.jsx";
-import RecruitmentDetails from "../pages/recruitments/RecruitmentDetails.jsx";
-import EditRecruitment from "../pages/recruitments/EditRecruitment.jsx";
+import Recruitments from "../pages/recrutments/Recruitments.jsx";
+import CreateRecruitment from "../pages/recrutments/CreateRecruitment.jsx";
+import RecruitmentDetails from "../pages/recrutments/RecruitmentDetails.jsx";
+import EditRecruitment from "../pages/recrutments/EditRecruitment.jsx";
 
 import Recommendations from "../pages/recommendations/Recommendations.jsx";
 

@@ -6,7 +6,7 @@ import {
 
 import {
   getProjectById,
-} from "../../services/projectService.js";
+} from "../services/projectService.js";
 
 const extractProject = (response) => {
   return (

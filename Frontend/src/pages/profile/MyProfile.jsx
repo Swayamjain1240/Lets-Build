@@ -8,11 +8,11 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-import ProfileHeader from "../../components/user/ProfileHeader.jsx";
-import ProfileAbout from "../../components/user/ProfileAbout.jsx";
-import ProfileSkills from "../../components/user/ProfileSkills.jsx";
-import ProfileEducation from "../../components/user/ProfileEducation.jsx";
-import ProfileDetailSkeleton from "../../components/user/ProfileDetailSkeleton.jsx";
+import ProfileHeader from "../../components/profile/ProfileHeader.jsx";
+import ProfileAbout from "../../components/profile/ProfileAbout.jsx";
+import ProfileSkills from "../../components/profile/ProfileSkills.jsx";
+import ProfileEducation from "../../components/profile/ProfileEducation.jsx";
+import ProfileDetailSkeleton from "../../components/profile/ProfileDetailSkeleton.jsx";
 
 import {
   getMyProfile,

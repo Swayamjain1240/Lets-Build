@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 
 import DeveloperCard from "./DeveloperCard.jsx";
-import ProfileSkeleton from "./ProfileSkeleton.jsx";
+import ProfileSkeleton from "../profile/ProfileSkeleton.jsx";
 
 export default function DeveloperGrid({
   developers = [],

@@ -1,0 +1,27 @@
+{
+  "name": "let's-build",
+  "version": "1.0.0",
+  "description": "A privacy-focused full-stack collaboration platform that helps students and developers find suitable teammates based on skills and private project requirements.",
+  "main": "index.js",
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:ai": "cd aiServices && C:\\lb-ai\\Scripts\\python.exe -m uvicorn main:app --reload --port 8000",
+    "dev": "concurrently -k -n FRONTEND,BACKEND,AI \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:ai\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Swayamjain1240/Lets-s-Build.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Swayamjain1240/Lets-s-Build/issues"
+  },
+  "homepage": "https://github.com/Swayamjain1240/Lets-s-Build#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}

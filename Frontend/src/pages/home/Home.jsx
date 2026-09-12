@@ -8,7 +8,7 @@ import {
 import { Link } from "react-router-dom";
 
 import DeveloperCard from "../../components/user/DeveloperCard.jsx";
-import ProfileSkeleton from "../../components/user/ProfileSkeleton.jsx";
+import ProfileSkeleton from "../../components/profile/ProfileSkeleton.jsx";
 
 import useAuth from "../../hooks/useAuth.js";
 import useDevelopers from "../../hooks/useDevelopers.js";
