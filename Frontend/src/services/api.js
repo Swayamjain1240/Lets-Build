@@ -1,19 +1,29 @@
-import axios from "axios"
+import axios from "axios";
+
+const API_URL =
+    import.meta.env.VITE_API_URL ||
+    "https://lets-build-mb7f.onrender.com/api";
 
 const api = axios.create({
-    baseURL:import.meta.env.VITE_API_URL || "https://lets-build-mb7f.onrender.com/api",
+    baseURL: API_URL,
     withCredentials: true,
 });
 
-api.interceptors.request.use((config)=>{
-    const token = localStorage.getItem("token");
-    if(token){
-        config.headers.Authorization = `Bearer ${token}`;
-    }
+api.interceptors.request.use(
+    (config) => {
+        const token =
+            localStorage.getItem("token");
 
-    return config;
-}, (error)=>{
-    return Promise.reject(error);
-});
+        if (token) {
+            config.headers.Authorization =
+                `Bearer ${token}`;
+        }
+
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export default api;
