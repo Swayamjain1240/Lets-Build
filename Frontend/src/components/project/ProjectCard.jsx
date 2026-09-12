@@ -1,22 +1,14 @@
 import {
     ArrowUpRight,
     CalendarDays,
-    Users,
+    Crown,
+    UserRound,
 } from "lucide-react";
+
 import { Link } from "react-router-dom";
 
 import ProjectStatusBadge from "./ProjectStatusBadge.jsx";
 import ProjectSkillList from "./ProjectSkillList.jsx";
-
-const getId = (value) => {
-    if (!value) return "";
-
-    return String(
-        typeof value === "object"
-            ? value._id || value.id || ""
-            : value
-    );
-};
 
 export default function ProjectCard({
     project,
@@ -30,30 +22,29 @@ export default function ProjectCard({
         owner,
         requiredSkills = [],
         rawRequiredSkills = [],
-        teamMembers = [],
         updatedAt,
+        accessRole,
     } = project;
 
-    const memberIds = [
-        getId(owner),
+    const isOwner =
+        accessRole === "OWNER";
 
-        ...teamMembers.map((member) =>
-            getId(member.user)
-        ),
-    ].filter(Boolean);
-
-    const teamCount =
-        new Set(memberIds).size;
+    const ownerName =
+        typeof owner === "object"
+            ? owner?.name
+            : "Project Owner";
 
     const updatedDate = updatedAt
-        ? new Date(updatedAt).toLocaleDateString(
-            "en-IN",
-            {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-            }
-        )
+        ? new Date(
+              updatedAt
+          ).toLocaleDateString(
+              "en-IN",
+              {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+              }
+          )
         : null;
 
     return (
@@ -61,11 +52,14 @@ export default function ProjectCard({
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                     <p className="text-xs font-medium text-muted">
-                        Private workspace
+                        {isOwner
+                            ? "Private project workspace"
+                            : "Collaboration workspace"}
                     </p>
 
                     <h2 className="mt-2 line-clamp-2 text-lg font-semibold text-heading">
-                        {title || "Untitled project"}
+                        {title ||
+                            "Untitled project"}
                     </h2>
                 </div>
 
@@ -80,30 +74,68 @@ export default function ProjectCard({
                 </p>
 
                 <ProjectSkillList
-                    skills={requiredSkills}
-                    rawSkills={rawRequiredSkills}
+                    skills={
+                        requiredSkills
+                    }
+                    rawSkills={
+                        rawRequiredSkills
+                    }
                 />
             </div>
 
-            <div className="mt-auto pt-6">
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted">
-                    <span className="flex items-center gap-1.5">
-                        <Users size={15} />
+            <div className="mt-5 rounded-xl border border-border-soft bg-background/40 p-3">
+                {isOwner ? (
+                    <div className="flex items-center gap-2 text-xs text-muted">
+                        <Crown
+                            size={15}
+                            className="text-brand-400"
+                        />
 
-                        {teamCount}{" "}
-                        {teamCount === 1
-                            ? "member"
-                            : "members"}
-                    </span>
-
-                    {updatedDate && (
-                        <span className="flex items-center gap-1.5">
-                            <CalendarDays size={15} />
-
-                            {updatedDate}
+                        <span>
+                            Your project
                         </span>
-                    )}
-                </div>
+
+                        <span className="font-medium text-heading">
+                            Owner
+                        </span>
+                    </div>
+                ) : (
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-xs text-muted">
+                            <UserRound
+                                size={15}
+                            />
+
+                            <span>
+                                Owner:
+                            </span>
+
+                            <span className="font-medium text-heading">
+                                {ownerName ||
+                                    "Project Owner"}
+                            </span>
+                        </div>
+
+                        <p className="text-xs text-muted">
+                            Your role:{" "}
+                            <span className="font-medium text-brand-400">
+                                Collaborator
+                            </span>
+                        </p>
+                    </div>
+                )}
+            </div>
+
+            <div className="mt-auto pt-5">
+                {updatedDate && (
+                    <div className="flex items-center gap-1.5 text-xs text-muted">
+                        <CalendarDays
+                            size={15}
+                        />
+
+                        {updatedDate}
+                    </div>
+                )}
 
                 <Link
                     to={`/projects/${_id}`}

@@ -28,16 +28,64 @@ export const createProject = async (ownerId, projectData) => {
   return await Project.findById(project._id).populate("owner", 'name email profilePicture').populate('requiredSkills', 'name displayName');
 };
 
-export const getOwnerProjects = async (ownerId) => {
-  return await Project.find({ owner: ownerId })
-    .populate('requiredSkills', 'name displayName')
-    .populate('teamMembers.user', 'name email profilePicture')
-    .sort({ createdAt: -1 });
+export const getUserProjects = async (userId) => {
+  const projects = await Project.find({
+    $or: [
+      {
+        owner: userId,
+      },
+      {
+        "teamMembers.user": userId,
+      },
+    ],
+  })
+    .populate(
+      "owner",
+      "name email profilePicture"
+    )
+    .populate(
+      "requiredSkills",
+      "name displayName"
+    )
+    .populate(
+      "teamMembers.user",
+      "name email profilePicture"
+    )
+    .sort({
+      updatedAt: -1,
+    });
+
+  return projects.map((project) => {
+    const projectObject =
+      project.toObject();
+
+    const isOwner =
+      project.owner?._id
+        ?.toString() ===
+      userId.toString();
+
+    if (!isOwner) {
+      delete projectObject.teamMembers;
+    }
+
+    projectObject.accessRole =
+      isOwner
+        ? "OWNER"
+        : "COLLABORATOR";
+
+    return projectObject;
+  });
 };
 
-export const getProjectById = async (projectId, userId) => {
-
-  if (!mongoose.isValidObjectId(projectId)) {
+export const getProjectById = async (
+  projectId,
+  userId
+) => {
+  if (
+    !mongoose.isValidObjectId(
+      projectId
+    )
+  ) {
     const error = new Error(
       "Invalid project ID"
     );
@@ -46,29 +94,70 @@ export const getProjectById = async (projectId, userId) => {
     throw error;
   }
 
-  const project = await Project.findById(projectId)
-    .populate('owner', 'name email profilePicture bio')
-    .populate('requiredSkills', 'name displayName')
-    .populate('teamMembers.user', 'name email profilePicture experience skills');
+  const project =
+    await Project.findById(
+      projectId
+    )
+      .populate(
+        "owner",
+        "name email profilePicture bio"
+      )
+      .populate(
+        "requiredSkills",
+        "name displayName"
+      )
+      .populate(
+        "teamMembers.user",
+        "name email profilePicture experience skills"
+      );
 
   if (!project) {
-    const error = new Error('Project not found');
+    const error = new Error(
+      "Project not found"
+    );
+
     error.statusCode = 404;
     throw error;
   }
 
-  const isOwner = project.owner._id.toString() === userId.toString();
-  const isTeamMember = project.teamMembers.some(
-    (member) => member.user._id.toString() === userId.toString()
-  );
+  const isOwner =
+    project.owner?._id
+      ?.toString() ===
+    userId.toString();
 
-  if (!isOwner && !isTeamMember) {
-    const error = new Error('Access denied: Private project idea details are restricted to team members.');
+  const isTeamMember =
+    project.teamMembers.some(
+      (member) =>
+        member.user?._id
+          ?.toString() ===
+        userId.toString()
+    );
+
+  if (
+    !isOwner &&
+    !isTeamMember
+  ) {
+    const error = new Error(
+      "Access denied: Private project details are restricted to project members."
+    );
+
     error.statusCode = 403;
     throw error;
   }
 
-  return project;
+  const projectObject =
+    project.toObject();
+
+  projectObject.accessRole =
+    isOwner
+      ? "OWNER"
+      : "COLLABORATOR";
+
+  if (!isOwner) {
+    delete projectObject.teamMembers;
+  }
+
+  return projectObject;
 };
 
 export const updateProject = async (projectId, userId, updateData) => {

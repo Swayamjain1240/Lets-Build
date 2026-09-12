@@ -26,9 +26,16 @@ export const createProject = async (req, res, next) => {
   }
 };
 
-export const getMyProjects = async (req, res, next) => {
+export const getMyProjects = async (
+  req,
+  res,
+  next
+) => {
   try {
-    const projects = await projectService.getOwnerProjects(req.user._id);
+    const projects =
+      await projectService.getUserProjects(
+        req.user._id
+      );
 
     res.status(200).json({
       success: true,

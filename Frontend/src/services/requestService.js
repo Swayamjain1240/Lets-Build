@@ -1,56 +1,62 @@
-import api from "./api.js"
+import api from "./api.js";
 
 const REQUESTS_URL = "/requests";
 
 export const getReceivedRequests = async (
-  config = {}
+    config = {}
 ) => {
-  const response = await api.get(
-    `${REQUESTS_URL}/received`,
-    config
-  );
+    const response = await api.get(
+        `${REQUESTS_URL}/received`,
+        config
+    );
 
-  return response.data;
+    return response.data;
 };
 
 export const getSentRequests = async (
-  config = {}
+    config = {}
 ) => {
-  const response = await api.get(
-    `${REQUESTS_URL}/sent`,
-    config
-  );
+    const response = await api.get(
+        `${REQUESTS_URL}/sent`,
+        config
+    );
 
-  return response.data;
+    return response.data;
 };
 
 export const createRequest = async (
-  requestData
-) => {
-  const response = await api.post(
-    REQUESTS_URL,
     requestData
-  );
+) => {
+    const response = await api.post(
+        REQUESTS_URL,
+        requestData
+    );
 
-  return response.data;
+    return response.data;
 };
 
 export const acceptRequest = async (
-  requestId
+    requestId
 ) => {
-  const response = await api.put(
-    `${REQUESTS_URL}/${requestId}/accept`
-  );
+    const response = await api.put(
+        `${REQUESTS_URL}/${requestId}/respond`,
+        {
+            status: "ACCEPTED",
+        }
+    );
 
-  return response.data;
+    return response.data;
 };
 
 export const rejectRequest = async (
-  requestId
+    requestId
 ) => {
-  const response = await api.put(
-    `${REQUESTS_URL}/${requestId}/reject`
-  );
+    const response = await api.put(
+        `${REQUESTS_URL}/${requestId}/respond`,
+        {
+            status: "REJECTED",
+        }
+    );
 
-  return response.data;
+    return response.data;
 };
