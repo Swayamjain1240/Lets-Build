@@ -58,7 +58,7 @@ export const getUserConversations = async (userId) => {
         .sort({ updatedAt: -1 });
 };
 
-export const sendMessage = async (conversationId, senderId, text) => {
+export const sendMessage = async (conversationId, senderId, content) => {
     const conversation = await Conversation.findById(conversationId);
 
     if (!conversation) {
@@ -76,7 +76,7 @@ export const sendMessage = async (conversationId, senderId, text) => {
     const message = await Message.create({
         conversation: conversationId,
         sender: senderId,
-        content: text,
+        content,
     });
     const populatedMessage = await message.populate('sender', 'name profilePicture');
 

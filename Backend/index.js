@@ -35,7 +35,7 @@ app.use(cors({
 
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
-app.use("/api/projects", projectRoute);
+app.use("/api/project", projectRoute);
 app.use("/api/recruitments", recruitmentRoute);
 app.use("/api/request", requestRouter)
 app.use("/api/team", teamRouter)
