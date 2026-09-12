@@ -11,7 +11,7 @@ export const initSocket = (server) => {
         cors: {
             origin:
                 process.env.CLIENT_URL ||
-                "http://localhost:5173",
+                "https://lets-build-frontend-27j5.onrender.com",
 
             methods: [
                 "GET",
