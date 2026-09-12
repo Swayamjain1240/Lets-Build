@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useState,
+  useRef
 } from "react";
 
 import {
@@ -33,6 +34,8 @@ export default function MyProfile() {
   const [error, setError] =
     useState("");
 
+  const profileRef = useRef(null);
+
   const fetchProfile =
     useCallback(async () => {
       setLoading(true);
@@ -53,7 +56,7 @@ export default function MyProfile() {
 
         setError(
           err.response?.data?.message ||
-            "Unable to load your profile."
+          "Unable to load your profile."
         );
       } finally {
         setLoading(false);
@@ -64,14 +67,28 @@ export default function MyProfile() {
     fetchProfile();
   }, [fetchProfile]);
 
-  useGSAP(() => {
-    gsap.from(".profile-page", {
-      opacity: 0,
-      y: 12,
-      duration: 0.5,
-      ease: "power3.out",
-    });
-  }, []);
+  useGSAP(
+    () => {
+      if (!profileRef.current) return;
+
+      gsap.fromTo(
+        profileRef.current,
+        {
+          opacity: 0,
+          y: 20,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: "power2.out",
+        }
+      );
+    },
+    {
+      dependencies: [profile],
+    }
+  );
 
   if (loading) {
     return <ProfileDetailSkeleton />;
@@ -90,7 +107,7 @@ export default function MyProfile() {
   }
 
   return (
-    <div className="profile-page space-y-5">
+    <div ref={profileRef} className="profile-page space-y-5">
       <ProfileHeader
         profile={profile}
         isOwnProfile

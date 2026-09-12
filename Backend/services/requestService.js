@@ -20,6 +20,7 @@ export const createRequest = async (senderId, requestData) => {
   }
 
 
+
   // Cannot send request to yourself
   if (
     senderId.toString() === receiverId.toString()
@@ -201,4 +202,50 @@ export const getUserRequests = async (userId) => {
     .populate('receiver', 'name email profilePicture skills')
     .populate('project', 'title status owner')
     .sort({ createdAt: -1 });
+};
+
+export const getReceivedRequests = async (
+    userId
+) => {
+    return Request.find({
+        receiver: userId,
+    })
+        .populate(
+            "sender",
+            "name email profilePicture skills"
+        )
+        .populate(
+            "receiver",
+            "name email profilePicture skills"
+        )
+        .populate(
+            "project",
+            "title status owner"
+        )
+        .sort({
+            createdAt: -1,
+        });
+};
+
+export const getSentRequests = async (
+    userId
+) => {
+    return Request.find({
+        sender: userId,
+    })
+        .populate(
+            "sender",
+            "name email profilePicture skills"
+        )
+        .populate(
+            "receiver",
+            "name email profilePicture skills"
+        )
+        .populate(
+            "project",
+            "title status owner"
+        )
+        .sort({
+            createdAt: -1,
+        });
 };

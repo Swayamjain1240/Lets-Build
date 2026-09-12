@@ -1,40 +1,60 @@
-import {
-  Bell,
-} from "lucide-react";
-
-import {
-  Link,
-} from "react-router-dom";
+import { Bell } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import useNotifications from "../../hooks/useNotifications.js";
 
 export default function NotificationBell() {
-  const {
-    unreadCount,
-  } = useNotifications();
+    const navigate = useNavigate();
 
-  const badge =
-    unreadCount > 99
-      ? "99+"
-      : unreadCount;
+    const {
+        unreadCount = 0,
+    } = useNotifications();
 
-  return (
-    <Link
-      to="/notifications"
-      aria-label={
-        unreadCount > 0
-          ? `${unreadCount} unread notifications`
-          : "Notifications"
-      }
-      className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted transition-colors hover:bg-surface hover:text-heading"
-    >
-      <Bell size={19} />
+    return (
+        <button
+            type="button"
+            onClick={() =>
+                navigate("/notifications")
+            }
+            className="
+                relative
+                flex h-10 w-10
+                items-center justify-center
+                rounded-xl
+                text-muted
+                transition-colors
+                hover:bg-surface
+                hover:text-heading
+            "
+            aria-label={`Notifications, ${unreadCount} unread`}
+        >
+            <Bell size={21} />
 
-      {unreadCount > 0 && (
-        <span className="absolute -right-1.5 -top-1.5 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-brand-500 px-1 text-[10px] font-semibold text-white">
-          {badge}
-        </span>
-      )}
-    </Link>
-  );
+            {unreadCount > 0 && (
+                <span
+                    className="
+                        absolute
+                        -right-1
+                        -top-1
+                        flex
+                        h-5
+                        min-w-5
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-red-500
+                        px-1
+                        text-[10px]
+                        font-bold
+                        leading-none
+                        text-white
+                    "
+                >
+                    {unreadCount > 99
+                        ? "99+"
+                        : unreadCount}
+                </span>
+            )}
+        </button>
+    );
 }

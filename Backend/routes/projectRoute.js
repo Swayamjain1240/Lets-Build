@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(protect);
 
 router.post("/", createProject);
-router.get("/my-project", getMyProjects);
+router.get("/", getMyProjects);
 router.get("/:id", getProjectDetails);
 router.put("/:id", updateProject);
 
