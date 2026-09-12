@@ -65,3 +65,45 @@ export const getMyRequests = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getReceivedRequests = async (
+    req,
+    res,
+    next
+) => {
+    try {
+        const requests =
+            await requestService.getReceivedRequests(
+                req.user._id
+            );
+
+        res.status(200).json({
+            success: true,
+            count: requests.length,
+            data: requests,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getSentRequests = async (
+    req,
+    res,
+    next
+) => {
+    try {
+        const requests =
+            await requestService.getSentRequests(
+                req.user._id
+            );
+
+        res.status(200).json({
+            success: true,
+            count: requests.length,
+            data: requests,
+        });
+    } catch (error) {
+        next(error);
+    }
+};

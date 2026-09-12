@@ -35,20 +35,30 @@ export const getProfile = async (req, res, next) => {
   }
 };
 
-export const getPublicUserById = async (userId) => {
-  const user = await User.findById(userId)
-    .select(
-      "name profilePicture bio college experience skills githubUrl linkedinUrl isOnboarded"
-    )
-    .populate("skills", "name displayName");
+export const getPublicUserById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
 
-  if (!user) {
-    const error = new Error("User not found");
-    error.statusCode = 404;
-    throw error;
+    const user = await User.findById(id)
+      .select(
+        "name profilePicture bio college experience skills githubUrl linkedinUrl isOnboarded"
+      )
+      .populate("skills", "name displayName");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Developer not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  return user;
 };
 
 export const updateProfile = async (req, res, next) => {
