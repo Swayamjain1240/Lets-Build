@@ -109,13 +109,28 @@ export default function AboutYouStep({ form, user }) {
       </div>
 
       <div>
-        <p className="mb-2 text-sm font-medium text-body">
+        <label
+          htmlFor="name"
+          className="mb-2 block text-sm font-medium text-body"
+        >
           Full name
-        </p>
+        </label>
 
-        <div className="rounded-xl border border-border bg-surface-soft px-4 py-3 text-sm text-heading">
-          {user?.name || "Your name"}
-        </div>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          value={formData.name}
+          onChange={change}
+          placeholder="Your name"
+          className={textareaClass}
+        />
+
+        {errors.name && (
+          <p className="mt-2 text-xs text-danger">
+            {errors.name}
+          </p>
+        )}
       </div>
 
       <div>
