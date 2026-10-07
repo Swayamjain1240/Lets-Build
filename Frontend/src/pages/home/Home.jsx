@@ -48,12 +48,12 @@ export default function Home() {
     });
 
     gsap.from(".quick-action", {
-      opacity: 0,
       y: 12,
       stagger: 0.08,
       duration: 0.45,
       delay: 0.1,
       ease: "power3.out",
+      clearProps: "transform",
     });
   }, []);
 
