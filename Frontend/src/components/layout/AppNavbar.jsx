@@ -2,7 +2,7 @@ import { Menu } from "lucide-react";
 
 import AppUserMenu from "./AppUserMenu";
 import NotificationBell from "../notification/NotificationBell.jsx";
-
+import ThemeToggle from "../common/ThemeToggle.jsx";
 export default function AppNavbar({
     onMenuClick,
     sidebarOpen,
@@ -54,8 +54,8 @@ export default function AppNavbar({
 
             {/* Right */}
             <div className="flex items-center gap-3">
+                <ThemeToggle />
                 <NotificationBell />
-
                 <AppUserMenu />
             </div>
         </header>
