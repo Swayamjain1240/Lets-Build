@@ -5,7 +5,7 @@ import {
   X,
   ArrowRight,
 } from "lucide-react";
-
+import ThemeToggle from "../common/ThemeToggle.jsx";
 
 const PublicNavbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -117,6 +117,7 @@ const PublicNavbar = () => {
             md:flex
           "
         >
+          <ThemeToggle />
           <Link
             to="/login"
             className="
